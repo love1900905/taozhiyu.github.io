@@ -1,11 +1,11 @@
 const CACHE_NAME = "e8a7978";
 const urlsToCache = [
 	"./css/interactive-b9dc29f.css",
+	"./css/Font.css",
+	"./css/Tao.woff2",
 	"./js/required-3e873030.js",
 	"./js/extra-59fbde3d.js",
 	"./JSON/properties-3306ac9.json",
-	"./icon/ptable-logo.svg",
-	"./icon/pt-square.svg",
 	"./JSON/compounds.json",
 	"./JSON/isotope/all.json"
 ];
