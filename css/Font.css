@@ -1,0 +1,11 @@
+@font-face {
+	font-family: 'taozhiyuFont';
+	font-style: normal;
+	/*font-weight: 400;*/
+	src: url('Tao.woff2') format('woff2'),
+         url('Tao.woff') format('woff');
+ 
+	}
+/*#Ptable > li > em {
+	font-family:"taozhiyuFont"
+}*/

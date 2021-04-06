@@ -1,0 +1,26 @@
+{
+	"short_name": "Ptable",
+	"name": "元素周期表 - Ptable",
+	"description": "交互式的周期表在动态的布局里展现名字,电子,曲线,轨道,同位素,搜索.全面的描述.",
+	"categories": ["education", "utilities"],
+	"lang": "zh",
+	"icons": [
+		{
+			"src": "../icon/pt-square-192.png",
+			"type": "image/png",
+			"sizes": "192x192",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "../icon/pt-square.svg",
+			"type": "image/svg+xml",
+			"sizes": "512x512",
+			"purpose": "any maskable"
+		}
+	],
+	"start_url": "/?lang=zh",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "white",
+	"theme_color": "#0276FD"
+}

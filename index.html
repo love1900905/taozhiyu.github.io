@@ -1,0 +1,2214 @@
+<!doctype html>
+<html lang="zh-CN" data-iso="zh" dir="ltr" class="Property" data-wide="0">
+<!-- toggled classes: Wide, Sidebar, Collapse, [Tab], Dark, SmoothResize, NoTransitions -->
+ <head>
+  <title>元素周期表 - Ptable</title>
+  <meta charset="utf-8">
+  <script>
+ 
+  const dark_os_theme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const theme_set = /Theme=/.test(document.cookie);
+  const dark_set = /Theme=Dark/.test(document.cookie);
+  const layout_set = /Layout=/.test(document.cookie);
+  const layout_sidebar_set = /Layout=Sidebar/.test(document.cookie);
+  const wide_enough_but_not_tall = window.matchMedia("(min-width: 1200px) and (min-aspect-ratio: 6/5), (min-width: 1024px) and (min-aspect-ratio: 6/5) and (-webkit-min-device-pixel-ratio: 2)").matches;
+
+  if (dark_set || (dark_os_theme && !theme_set))
+  	document.documentElement.classList.add("Dark");
+  if (layout_sidebar_set || (wide_enough_but_not_tall && !layout_set))
+  	document.documentElement.classList.add("Sidebar");
+
+  window.CACHE_NAME = "e8a7978";
+  window.PropertiesURL = "./JSON/properties-3306ac9.json";
+  </script>
+  <meta name="description" content="交互式的周期表在动态的布局里展现名字,电子,曲线,轨道,同位素,搜索.全面的描述.">
+  <meta name="twitter:card" content="summary">
+  <meta property="og:title" content="元素周期表 - Ptable">
+  <meta property="og:description" content="交互式的周期表在动态的布局里展现名字,电子,曲线,轨道,同位素,搜索.全面的描述.">
+  <meta property="og:image" content="./icon/pt-square-192.png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0276FD">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="icon" href="./icon/pt-square-192.png">
+  <link rel="apple-touch-icon" href="./icon/pt-square-192.png">
+
+  <link rel="canonical" href="https://ptable.com/?lang=zh">
+  <link rel="manifest" href="./manifest/ptable.zh.webmanifest">
+<link rel="stylesheet" type="text/css" href="css/Font.css">
+  <style type="text/css">
+:root {
+	--solid:			#000;
+	--liquid:			#00D;
+	--gas:				#900;
+	--unknown:			#676;
+	--heat-gradient:	linear-gradient(to right, rgb(100,100,255), var(--blocks), yellow, orange, red);
+
+	--body-bg:			rgb(243, 246, 248);
+	--body-bg-trans:	rgba(243, 246, 248, 0);
+	--blocks:			rgb(255, 255, 255);
+	--text:				0, 0, 0;
+	--darkshadow:		rgba(0, 0, 0, 0.24);
+	--lightshadow:		rgba(0, 0, 0, 0.12);
+	--hovered:			#f5f8fa;
+	--selected:			#DDD;
+	--group:			#003660;
+	--invert:			0;
+	--unimportant:		hsl(0, 0%, 53%);
+	--nodata:			hsl(0, 0%, 90%);
+
+	--lock:				1;
+	--element-pad:		0.05rem;
+	--base-vw:			1.8;
+	--sidebar-shrink:	1;
+	--margin:			0.3rem;
+	--min:				768px;
+	--square-vw:		18;
+	--minfont:			calc(var(--base-vw) * var(--min) / var(--sidebar-shrink) / 100);
+	--property-rows:	6;
+	--row-height:		calc((var(--square) - var(--2margin)) / var(--property-rows));
+	--groups:			18;
+	--grid-space:		calc(5 * var(--aspect-ratio)); /* HACK: these are too complex */
+	--icon-height:		1.2rem;
+	--tab-height:		calc(var(--icon-height) + var(--2margin));
+	--border-width:		calc(var(--gridgap) / 2);
+	--track-height:		var(--2margin);
+	--periods:			1em;
+	--button-size:		calc(2 * var(--track-height));
+	--bordercolor:		rgba(var(--text), 0.12);
+	--logo-ratio:		calc(280 / 121.1);
+	--rtl:				1;
+
+	--tab-active:		rgb(2,118,253);
+	--tab-hover:		rgb(45,190,252);
+	--tab-inactive:		#999;
+
+	/*** Derived ***/
+	--2margin:			calc(var(--margin) * 2);
+	--gridgap:			calc(var(--grid-space) * var(--sidebar-shrink) / var(--groups));
+	--fixedgridgap:		var(--gridgap); /* HACK: these are too complex */
+	--fixedborderwidth:	var(--border-width);
+	--groupfactor:		calc(1 + (var(--groups) - 18) / 18);
+
+	--alkali:			hsl(48deg, 77%, 64%);
+	--alkaline:			hsl(60deg, 83%, 67%);
+	--lanthanoid:		hsl(36deg, 82%, 80%);
+	--actinoid:			hsl(340deg, 81%, 89%);
+	--transition:		hsl(0deg, 63%, 88%);
+	--poor:				hsl(192deg, 62%, 80%);
+	--metalloid:		hsl(165deg, 58%, 76%);
+	--nonmetal:			hsl(120deg, 73%, 74%);
+	--noble:			hsl(300deg, 44%, 82%);
+	--nocategory:		#EEE;
+	--divider:			#CEF;
+	--divideroutline:	#AAF;
+	--dividerhover:		#BBF;
+	--scrool-bar-color: #e5e5e5;
+	--scrool-bar-thumb-color: #c1c1c1;
+}
+:root[dir="rtl"] {
+	--rtl:				-1;
+	--heat-gradient:	linear-gradient(to left, rgb(100,100,255), var(--blocks), yellow, orange, red);
+}
+.KeyRegion	{
+	--margin:			calc(0.3rem * var(--sidebar-shrink));
+	--2margin:			calc(var(--margin) * 2);
+}
+
+.Dark	{
+	--bordercolor:		rgba(var(--text), 0.2);
+
+	--solid:			#b5b5b5;
+	--liquid:			#99F;
+	--gas:				#F44;
+	--unknown:			#777;
+	--nodata:			#333;
+
+	--body-bg:			rgb(0, 0, 0);
+	--body-bg-trans:	rgba(0, 0, 0, 0);
+	--blocks:			#191919;
+	--text:				222, 222, 222;
+	--darkshadow:		rgba(255, 255, 255, 0.24);
+	--lightshadow:		rgba(255, 255, 255, 0.12); /* needed by safari */
+	--hovered:			#141D26;
+	--selected:			#393939;
+	--group:			#aaa5f3;
+	--invert:			1;
+
+	--tab-active:		#588ffe;
+	--tab-inactive:		#999;
+
+	--alkali:			#6c3b01;
+	--alkaline:			#846011;
+	--lanthanoid:		#402c17;
+	--actinoid:			#732e4c;
+	--transition:		#711019;
+	--poor:				#003666;
+	--metalloid:		#015146;
+	--nonmetal:			#3e6418;
+	--noble:			#3a2151;
+	--nocategory:		#222;
+	--divider:			#00A;
+	--divideroutline:	#00D;
+	--dividerhover:		#00B;
+	--scrool-bar-color: #000000;
+	--scrool-bar-thumb-color: #5e5e5e;
+}
+
+/*** Undone in interactive ***/
+.KeyRegion > :not(.SeriesState)	{ display: none; }
+
+/* Hidden properties, must be done early */
+.DataRegion .Resets,
+.DataRegion .Compounds		{ display: none !important; }
+
+
+.Dark a[href]		{ color: var(--tab-active); }
+.Dark a:visited		{ color: var(--group); }
+*					{ box-sizing: border-box; /* Admit it, IE got this right and the initial standard was dumb */ }
+.NoTransitions *	{ transition: all 0.05s linear !important; }
+html, body			{ font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background-color: var(--body-bg); color: rgb(var(--text)); }
+body				{ margin: 0; }
+
+/*** Anchors ***/
+footer a,
+.KeyRegion a,
+.Group > a			{ text-decoration: inherit;  }/*width: 4em;*/
+#Ptable > .Group > a{ width: 4em;  }
+a[href]:hover		{ outline: medium solid var(--tab-hover); outline-offset: 0.09rem; }
+a[href^="#"]:hover	{ outline: none; }
+
+/*** Reset ***/
+dd					{ margin: 0; }
+ul, ol				{ list-style-type: none; padding-inline-start: 0; }
+
+/*** Box shadows ***/
+header,
+.Raised + label,
+.adsbygoogle[data-adsbygoogle-status="done"],
+ol,
+input[type="search"],
+input[type="button"],
+[value="expandedconfig"] + li > output > b::before,
+ul > li				{ background-color: var(--blocks); box-shadow: 0 1px 3px var(--lightshadow), 0 1px 2px var(--darkshadow); }
+.Raised + label:hover,
+.Raised:focus + *	{ box-shadow: 0 2px 4px var(--lightshadow), 0 2px 3px var(--darkshadow); }
+figure				{ box-shadow: 0 1px 3px var(--lightshadow), 0 1px 2px var(--darkshadow),
+							inset 0 1px 3px rgba(0,0,0,0.12), inset 0 1px 2px rgba(0,0,0,0.24); }
+.Raised:checked + label
+					{ box-shadow: inset 0 1px 3px rgba(0,0,0,0.24), inset 0 1px 2px rgba(0,0,0,0.48); }
+.Expand				{ box-shadow: 0 19px 38px var(--darkshadow), 0 15px 12px var(--lightshadow),
+							inset 0 1px 3px rgba(0,0,0,0.12), inset 0 1px 2px rgba(0,0,0,0.24); }
+
+/*** Header ***/
+body > h1					{ display: none; }
+header						{ font-size: 0.85em; font-weight: 500; letter-spacing: -0.02em; }
+header, nav					{ display: flex; }
+.Logo + label img			{ display: block; }
+
+header label				{ display: flex; align-items: center; }
+header label > a,
+header label > a[href]:hover{ text-decoration: inherit; color: inherit !important; }
+header svg + a				{ margin-inline-start: calc(var(--margin) / 2); }
+
+header > label svg,
+nav > label svg				{ height: var(--tab-height); }
+.Raised + label svg			{ height: var(--icon-height); }
+.Logo + label img			{ width: calc(var(--tab-height) * var(--logo-ratio)); }
+
+.Button + label				{ margin: var(--2margin) var(--margin); }
+.Raised + label				{ padding: var(--margin); border-radius: 0.3em; background-color: var(--body-bg); }
+
+.Logo + label,
+nav > label					{ padding: 0 var(--2margin); }
+header > input:last-of-type + label	{ padding-inline-end: var(--margin); }
+
+header label				{ color: var(--tab-inactive); }
+header input + :hover,
+header :focus + label		{ color: var(--tab-hover); background-color: var(--body-bg); }
+header :checked + label		{ color: var(--tab-active); background-color: var(--body-bg); }
+header .Flat + label		{ background-color: unset; }
+nav :checked + label		{ box-shadow: inset 0 -0.3em currentColor; }
+
+.Raised:checked + label		{ background-color: var(--tab-active); color: var(--blocks); }
+
+.Toggle.Left + label		{ margin-inline-end: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.Toggle.Right + label		{ margin-inline-start: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; }
+
+header input:last-of-type + label,
+.WideButton + label			{ margin-inline-start: auto; }
+.WideButton + label			{ padding-left: var(--2margin); padding-right: var(--2margin); }
+
+.MenuButton + label			{ display: none; }
+
+/*** SVG ***/
+header svg > g			{ stroke-width: 5; stroke: currentColor; fill: currentColor; }
+.Magnify g,
+.Toggle + label g		{ stroke-width: 9; }
+
+nav :checked + * polyline,
+nav :checked + * polygon,
+nav :checked + * rect,
+nav :checked + * circle,
+nav :checked + * path,
+nav :checked + * line		{ stroke: var(--body-bg); }
+nav :checked + * circle,
+nav :checked + * path,
+nav :checked + * polygon,
+nav :checked + * rect		{ fill: currentColor; }
+.FillMask					{ fill: var(--blocks); }
+input + label:hover .FillMask{ fill: var(--body-bg); }
+:checked + * .Dots circle	{ stroke: currentColor; }
+
+/*** Side/topbar ***/
+main						{ display: flex; }
+main > article				{ display: flex; flex-direction: column; }
+aside						{ display: flex; flex-basis: var(--square); overflow: hidden; }
+.Collapse aside,
+.Reset aside				{ opacity: 0; flex-basis: 0; visibility: hidden; }
+
+/* Side bar, landscape */
+.Sidebar					{ --square-vw: 20; }
+@media (max-width: 1200px) { /* iPad width or so */
+	.Sidebar				{ --square-vw: 24; }
+}
+.Sidebar .DataRegion		{ flex-grow: 1; flex-basis: 0; /* basis 0 plus grow 1 expands to height of sibling! */ }
+.Sidebar .DataRegion > *	{ display: initial; overflow-x: hidden; }
+.Sidebar main				{ flex-direction: row; min-width: 0; }
+.Sidebar aside				{ flex-direction: column; flex-shrink: 0; min-width: 0; }
+.Sidebar aside figure		{ align-self: center; font-size: 2.1em; height: 3.5em; width: 3.5em; flex: unset; }
+.Sidebar aside ul > li		{ min-height: 2.5em; padding: 0 calc(var(--margin) * 1.5); }
+.Sidebar main > article		{ transition: width 0.3s linear; min-width: 0; }
+.Sidebar:not(.Reset):not(.Collapse)
+							{ --sidebar-shrink: calc(1 - (var(--square-vw) + 2) / 100); /* 2% breathing room */ }
+.Sidebar[data-wide="15"] aside > figure	{ display: none; }
+.Sidebar[data-wide="15"]
+.Sidebar.Collapse,
+.Sidebar.Reset				{ --sidebar-shrink: 1; }
+.Sidebar canvas				{ height: unset; }
+
+/*** CloseUp box ***/
+figure					{ border: var(--margin) solid rgba(var(--text), 0.08); }
+figure a				{ text-decoration: inherit; color: inherit; }
+aside figure			{ font-size: 2.8em; padding: var(--margin); display: flex; flex-direction: row; justify-content: space-between; text-shadow: 0 1px 2px rgba(var(--text),0.2); flex: 0 0 calc(var(--square) - var(--2margin)); min-width: 0; white-space: nowrap; }
+figure > output			{ min-width: 0; }
+figure > output,
+figure > small			{ display: flex; flex-direction: column; justify-content: space-between; line-height: 1; }
+figure > small			{ min-width: 1.2em; /* HACK: magic number */ }
+
+/*** Radio button boxes ***/
+ul							{ display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; grid-template-rows: repeat(var(--property-rows), auto); grid-gap: 0 var(--2margin); margin: 0; scrollbar-width: none; -ms-overflow-style: -ms-autohiding-scrollbar; }
+ul.CompoundResults			{ display: initial; }
+ul::-webkit-scrollbar		{ display: none; }
+.CompoundResults > li		{ flex-wrap: wrap; }
+ul > li > select			{ margin-inline-end: calc(-1 * var(--margin)); font: inherit; border: none; color: var(--unimportant); background-color: unset; }
+ul > li > label > select	{ color: inherit; font: inherit; border: none; background-color: var(--body-bg); /* MAYBE */ }
+ul > li > a					{ text-align: end; }
+ul > li > output			{ text-align: end; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+ul > li.HideStart > output	{ direction: rtl; text-align: left; }
+ul > li:hover > output		{ direction: unset; white-space: initial; overflow: initial; text-align: end; }
+ul > li > a ~ a				{ flex-basis: 100%; }
+ul > li						{ display: flex; flex-direction: row; align-items: center; justify-content: flex-end; padding: 0 var(--2margin); break-inside: avoid; }
+aside ul > li				{ min-height: var(--row-height); }
+.DataRegion ul > li > label	{ margin-inline-end: var(--margin); white-space: nowrap; flex-grow: 1; }
+ul > li:hover				{ background-color: var(--hovered); }
+ul > input:checked + li		{ background-color: var(--selected); }
+ul > li > *					{ overflow-wrap: break-word; word-wrap: break-word; hyphens: auto; }
+
+/*** Unit selects ***/
+.electric > select:not(.electric),
+.thermal > select:not(.thermal),
+.specific > select:not(.specific),
+.vaporization > select:not(.vaporization),
+.fusion > select:not(.fusion)
+						{ display: none; }
+
+/*** Properties ***/
+.Properties				{ grid-auto-columns: 32fr 33fr 35fr; /* BUG: find less jittery values for russian: https://developer.mozilla.org/en-US/docs/Web/CSS/grid-auto-columns */ }
+
+/*** Slider ***/
+.Slider						{ position: sticky; left: var(--margin); display: flex; overflow: hidden; align-items: center; margin-inline-start: var(--margin); }
+[dir="rtl"] .Slider			{ left: unset; right: var(--margin); }
+.Slider > div,
+.Slider > label				{ margin: var(--margin) var(--2margin); }
+.Slider input[type="button"]{ font-size: inherit; color: inherit; height: var(--button-size); line-height: var(--button-size); padding: 0 0.1em; border: none; user-select: none; }
+.Slider input[type="button"]:active	{ background-color: ButtonFace; }
+.RangeNumbers				{ display: flex; align-items: baseline; margin: auto; white-space: nowrap; }
+.RangeNumbers > input		{ margin-inline-start: var(--margin); }
+.RangeNumbers > label		{ margin-inline-end: var(--margin); }
+input[type="number"]:out-of-range	{ background-color: #FCC; }
+
+.Slider						{ flex-basis: 0; visibility: hidden; opacity: 0; }
+.Reset .SliderTemp,
+.Property .series .SliderTemp,
+.Property .name .SliderTemp,
+.Property .state .SliderTemp,
+.Property .melt .SliderTemp,
+.Property .boil .SliderTemp,
+.Property .discover .SliderYear
+							{ flex-basis: 2.1em /* HACK: fixed size allows transition */; visibility: visible; opacity: 1; }
+.Property .name ol > li,
+.Isotope .isoname ol > li.Tope,
+.Isotope ol > li:not(.Tope)	{ cursor: pointer; }
+
+blockquote [type="text"],
+[type="number"]				{ width: 7ch; text-align: end; font-size: inherit; border: none; border-bottom: thin solid var(--unimportant); background-color: inherit; color: inherit; }
+blockquote [type="text"]	{ width: auto; }
+[type="number"]::-webkit-inner-spin-button	{ margin-left: 0.5ch; }
+[type="range"]		{ flex-grow: 1; }
+[type="range"]::-webkit-slider-runnable-track	{ border: thin solid ButtonShadow; }
+[type="range"]::-webkit-slider-thumb			{ -webkit-appearance: none; padding: var(--track-height) 0; margin: calc(var(--track-height) / -2) 0; background-color: var(--blocks); }
+[type="range"]::-moz-range-track				{ height: var(--track-height); border: thin solid ButtonShadow; }
+[type="range"]::-moz-range-thumb				{ padding: calc(var(--track-height) / 2) 0; border-radius: 0; background-color: var(--blocks); }
+
+.TempRange::-webkit-slider-runnable-track	{ background: var(--heat-gradient); }
+.YearRange::-webkit-slider-runnable-track	{ background: linear-gradient(to right, var(--blocks), 75%, var(--tab-active)); }
+.TempRange::-moz-range-track				{ background: var(--heat-gradient); }
+.YearRange::-moz-range-track				{ background: linear-gradient(to right, white, lightblue, blue); }
+
+/*** Table ***/
+ol				{ display: grid; justify-content: space-between; transform-style: preserve-3d; padding: calc(var(--margin)*1.5) var(--2margin) var(--2margin) var(--margin); }
+ol				{ grid-template-columns: var(--periods) repeat(var(--groups), minmax(0, 1fr)); }
+.Legend,
+ol > li			{ white-space: nowrap; padding: var(--element-pad); }
+ol li > *,
+.Legend > *,
+figure > output > *	{ line-height: 1; display: block; font-style: normal; font-weight: normal; }
+figure abbr, li > abbr	{ font-weight: 600; }
+
+/*** Element boxes ***/
+figure b,
+ol > * > b		{ font-size: 0.65em; font-weight: normal; speak: never; }
+ol > * > abbr	{ font-size: 0.9em; }
+em,
+data			{ font-size: 0.55em; }
+:lang(zh) ol > * > abbr	{ font-size: 0.7em; }
+:lang(zh) ol > * > em	{ font-size: 0.75em; } /* adds up to 1.45em just like 0.9+0.55 */
+small			{ font-size: 0.38em; text-align: end; }
+
+/*** Table interior ***/
+.Period, .Group		{ color: var(--group); line-height: 1; }
+.Period				{ align-self: center; text-align: right; padding-right: calc(var(--margin) / 2); z-index: 2; }
+.Period6, .Period7	{ margin-right: var(--fixedgridgap); }
+.Group > a			{ font-size: 0.5em; display: block; }
+.Group				{ justify-self: center; text-align: center; }
+.Parentheses		{ font-size: 0.7em; margin: var(--margin) var(--2margin); align-self: center; }
+.Label57to71,
+.Label89to103		{ font-size: 0.65em; align-self: center; text-align: center; }
+
+/*** Grid Positioning ***/
+.KeyRegion			{ grid-column: 4 / span 10; grid-row: 2 / span 3; }
+[data-wide="15"] .KeyRegion	{ grid-column-end: span 14; }
+.G3					{ grid-column-start: calc(var(--groups) - 14); }
+.WideGap,
+.WideKeyRegion		{ display: none; }
+.VerticalInner		{ grid-column-start: 4; grid-row: 7 / span 5; }
+.Legend				{ grid-column-start: 3; grid-row-start: 2; }
+.OldSlider			{ grid-column-end: span 5; grid-row-start: 2; }
+.PosterLogo			{ grid-column: 1 / span 3; grid-row: 9 / span 3; }
+.Parentheses		{ grid-column-end: span calc(var(--groups) - 3); }
+.Period6, .Period7,
+.Label57to71,
+.Label89to103		{ grid-column-start: 4; pointer-events: none; }
+li.Lanthanoid, .Period6	{ grid-row-start: 10; }
+li.Actinoid, .Period7	{ grid-row-start: 11; }
+.Label57to71		{ grid-row-start: 7; z-index: 2; }
+.Label89to103		{ grid-row-start: 8; z-index: 2; }
+
+/*** Input/accessibility ***/
+header input[type="radio"],
+.SearchConsole input[type="radio"],
+ul input[type="radio"],
+header input[type="checkbox"]	{ position: absolute; opacity: 0; clip-path: polygon(0 0); }
+input[type="radio"]:focus + li	{ box-shadow: inset 0.3em 0 var(--darkshadow),
+											0 1px 3px var(--lightshadow), 0 1px 2px var(--darkshadow); /* duplicated */ }
+.RangeNumbers label,
+.Unknown output.Unknown			{ background-color: inherit; color: var(--unimportant); }
+button							{ font-size: 1em; border: thin solid var(--bordercolor); color: inherit; background-color: var(--blocks); font-weight: bold; }
+
+/*** Ads ***/
+.Notice > button		{ margin: 0 var(--margin); align-self: flex-start; }
+.Notice > button::after	{ content: "✕"; }
+.adsbygoogle			{ display: block; flex-grow: 1; text-align: center; margin: 0 var(--margin); z-index: 1 !important; }
+blockquote				{ padding: 0 calc(2 * var(--2margin)); font-size: 0.8em; font-size: clamp(16px, 0.8em, 28px); margin: 0; }
+blockquote [type="submit"]	{ border: none; border-radius: 0.5em; padding: var(--margin); background-color: var(--lightshadow); color: var(--unimportant); }
+ins[data-adsbygoogle-status="done"] + blockquote,
+ins:not([data-adsbygoogle-status]) ~ button
+/*ins.adsbygoogle:not(:empty) + blockquote*/
+						{ display: none; }
+
+/*** Search ***/
+.SearchConsole			{ position: absolute; margin: var(--margin); transform: translateX(calc(var(--rtl) * -50%)); visibility: hidden; white-space: nowrap; }
+
+/*** Footer ***/
+footer					{ display: flex; flex-wrap: wrap; justify-content: space-between; }
+footer > :first-child	{ display: none; }
+addr					{ display: block; flex-basis: 100%; color: hsl(0, 0%, 53%); margin: var(--2margin) 0; font-size: 0.6em; text-align: center; }
+addr > a				{ color: inherit; }
+footer select			{ font: inherit; background-color: inherit; border: none; margin-left: -4.5px; color: inherit; }
+footer > dl				{ break-inside: avoid; color: var(--group); }
+footer dt				{ font-size: 0.9em; margin-bottom: var(--margin); text-transform: uppercase; letter-spacing: 0.1em; }
+footer dd				{ font-size: 0.8em; line-height: 1; margin: var(--margin) 0; }
+footer svg				{ width: 1em; vertical-align: bottom; }
+
+/*** Series Colors ***/
+.Alkali .Alkali			{ background-color: var(--alkali); }
+.Alkaline .Alkaline		{ background-color: var(--alkaline); }
+.Lanthanoid .Lanthanoid	{ background-color: var(--lanthanoid); }
+.Actinoid .Actinoid		{ background-color: var(--actinoid); }
+.Transition .Transition	{ background-color: var(--transition); }
+.Poor .Poor				{ background-color: var(--poor); }
+.Metalloid .Metalloid	{ background-color: var(--metalloid); }
+.Nonmetal .Nonmetal		{ background-color: var(--nonmetal); }
+.Noble .Noble			{ background-color: var(--noble); }
+.Unknown .Unknown		{ background-color: var(--nocategory); }
+.VerticalInner		{ background-color: var(--divider); border-color: var(--divideroutline); }
+
+/*** Series Legend ***/
+.state .Series > *		{ background-color: transparent; }
+.Series					{ display: grid; grid-auto-flow: column; grid-template-rows: repeat(3, auto); font-size: 0.7em; max-height: -webkit-fill-available; }
+.Series > *				{ padding: 0.15em; display: flex; /* expands A to fill container */ }
+.Series > * > a			{ flex-grow: 1; }
+.Series > dt			{ font-weight: 600; }
+.Series > dt:not(.Metalloid):hover
+						{ background-color: var(--selected); }
+.Series > dd			{ writing-mode: vertical-rl; grid-row-end: span 2; }
+.Series > dd > a		{ display: block;  }/*max-height: 8em;  HACK */
+.Series > .Metals		{ grid-column-end: span 5; text-align: center; border-top-left-radius: var(--margin); border-color: rgb(var(--text)); }
+.Series > .Metalloid	{ grid-row-end: span 3; writing-mode: vertical-rl; }
+.Series > .Nonmetals	{ grid-column-end: span 2; text-align: center; border-top-right-radius: var(--margin); border-color: rgb(var(--text)); }
+.Series > .Lanthanoid,
+.Series > .Actinoid		{ writing-mode: initial; grid-row-end: span 1; }
+
+/*** State of Matter Legend ***/
+dl						{ margin: 0; }
+.StateKey				{ display: flex; flex-direction: column; justify-content: space-between; }
+.StateKey > div			{ display: flex; align-items: baseline; }
+.StateKey dt			{ width: 1.4em; line-height: 1.4; box-sizing: content-box; border-color: var(rgb(--text)); text-align: center; font-weight: 600; }
+.StateKey dd			{ margin-inline-start: var(--margin); white-space: nowrap; }
+
+/*** State of Matter Colors ***/
+dt.Solid, dt.Solid + dd,
+.Solid > abbr			{ color: var(--solid); }
+dt.Liquid, dt.Liquid + dd,
+.Liquid > abbr			{ color: var(--liquid); }
+dt.Gas, dt.Gas + dd,
+.Gas > abbr				{ color: var(--gas); }
+dt.UnknownState, dt.UnknownState + dd,
+.UnknownState > abbr	{ color: var(--unknown); }
+
+@keyframes solid	{ to	{ background-color: var(--solid); color: var(--blocks); } }
+@keyframes liquid	{ to	{ background-color: var(--liquid); color: var(--blocks); } }
+@keyframes gas		{ to	{ background-color: var(--gas); color: var(--blocks); } }
+@keyframes unknown	{ to	{ background-color: var(--unknown); color: var(--blocks); } }
+
+.Solid, .Solid > abbr		{ animation: solid 0s step-start; }
+.Liquid, .Liquid > abbr		{ animation: liquid 0s step-start; }
+.Gas, .Gas > abbr			{ animation: gas 0s step-start; }
+.UnknownState,
+.UnknownState > abbr		{ animation: unknown 0s step-start; }
+
+li.White, li.White > abbr	{ color: white !important; }
+li.Black, li.Black > abbr	{ color: black !important; }
+
+.Reset .Delay li,
+.Property .series .Delay li,
+.Property .name .Delay li	{ animation-duration: 1s; }
+li > abbr					{ animation-duration: inherit !important; }
+
+.state dt					{ animation-fill-mode: forwards; }
+
+html:not(.Property):not(.Reset) abbr,
+.Property article:not(.name):not(.series):not(.melt):not(.boil) abbr
+							{ color: rgb(var(--text)); }
+
+/*** Borders and Gaps ***/
+ol > li,
+.Series > dd, .Series > .Metalloid,
+.CompoundDragTarget li
+					{ border-color: var(--bordercolor); }
+.StateOfMatter dt,
+.PropertyKey > dl,
+.Blocks dt,
+.ConfigBlocks > div > div > div,
+.CompoundDragTarget li,
+.Series > *,
+.VerticalInner		{ border-width: var(--border-width); border-style: solid; }
+.Series > .Nonmetals,
+.Series > .Metals	{ border-bottom: none; }
+
+.Legend				{ border-color: transparent; }
+.Legend,
+ol > li:not(.Tope)	{ border-width: var(--fixedborderwidth); border-style: solid; outline: 0 solid var(--tab-hover); }
+.VerticalInner		{ border-radius: var(--border-width); box-shadow: 0 0 0 var(--border-width) var(--divideroutline); }
+ol					{ grid-gap: var(--gridgap); }
+.Series				{ grid-gap: var(--fixedgridgap); }
+.StateOfMatter dt	{ border-color: rgb(var(--text)); }
+
+/*** Margins ***/
+header				{ margin-bottom: var(--margin); }
+.Notice				{ display: flex; align-items: center; margin: var(--2margin) var(--margin) 0; max-width: 100%; min-height: calc(90px + 1px + 2px); overflow: hidden; color: var(--unimportant); padding-top: 1px; padding-bottom: 2px; }
+main,
+ol,
+figure				{ margin: var(--margin); }
+
+/*** Legend and Data holders ***/
+.KeyRegion					{ contain: size; }
+.KeyRegion a				{ color: inherit !important; }
+.DataRegion					{ position: relative; /* for gradients */ }
+.DataRegion::before			{ background: linear-gradient(to bottom, var(--body-bg), var(--body-bg-trans)); content: ""; position: absolute; height: var(--margin); top: 0; left: 0; right: 0; z-index: 2; }
+.DataRegion::after			{ background: linear-gradient(to top, var(--body-bg), var(--body-bg-trans)); content: ""; position: absolute; height: var(--margin); bottom: 0; left: 0; right: 0; }
+.KeyRegion, .DataRegion		{ display: flex; overflow-x: hidden; /* overflow-x: scroll; -ms-overflow-style: none; scroll-snap-type: mandatory; scroll-snap-stop: always; scrollbar-width: none; scroll-snap-points-x: repeat(100%); scroll-snap-type: x mandatory; -ms-scroll-snap-type: mandatory; */ -webkit-transform-style: preserve-3d; /* Fixes flicker because it's so far offscreen */ }
+.KeyRegion > *				{ /* scroll-snap-align: start; */ display: flex; padding: var(--2margin); }
+.DataRegion > *				{ padding: var(--margin); overflow-y: auto; font-size: 0.65em; }
+.DataRegion > *,
+.KeyRegion > *				{ min-width: 100%; /* scroll-snap-align: start; */ }
+
+.SeriesState,
+.PropertyKey,
+.ElectronKey,
+.IsotopeKey > *,
+.CompoundKey				{ justify-content: space-around; } /* PropertyKey > :not(.IsotopeKey) ? */
+
+/* Top bar, default */
+main						{ flex-direction: column; }
+aside						{ flex-direction: row; }
+
+/* Height-width auto scaling */
+body > *					{ padding: 0 min((100% - 100 * var(--aspect-ratio)) / 2, (100% - var(--min) / var(--sidebar-shrink) * var(--groupfactor) - var(--2margin)) / 2); /* from ol min-width */ }
+footer						{ margin: 0 calc(20vw + 2 * var(--2margin)); padding: 0; }
+
+html						{ font-size: calc(var(--base-vw) * var(--aspect-ratio)); }
+.Slider,
+.DataRegion,				/* Next 3 get sidebar-shrink since they shrink when it's is active */
+.SearchConsole				{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-shrink)); }
+							/* Include groupfactor since Table shrinks when it goes wide */
+ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-shrink) / var(--groupfactor));
+							/* minfont already takes into account sidebar so undo it by multiplying so table is 768px wide minimum. */
+							  min-width: calc(var(--min) * var(--groupfactor) - 2 * var(--2margin)); }
+
+:root						{ --aspect-ratio: 1vw; --square: calc(var(--square-vw) * var(--aspect-ratio)); /* no min/max, fit to width only */ }
+@supports (font-size: min(1vw, 1vh)) {
+	:root						{ --square:	calc(var(--square-vw) * max(var(--min) / var(--sidebar-shrink) / 100, var(--aspect-ratio))); }
+	html						{ font-size: max(var(--base-vw) * var(--aspect-ratio), var(--minfont)); }
+	.Slider,
+	.DataRegion,				/* Next 3 get sidebar-shrink since they shrink when it's is active */
+	.SearchConsole				{ font-size: max(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-shrink), var(--minfont)); }
+	ol							{ font-size: max(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-shrink) / var(--groupfactor), var(--minfont) * var(--sidebar-shrink)); }
+								/* minfont already takes into account sidebar so undo it by multiplying so table is 768px wide minimum. */
+	:root						{ --aspect-ratio: min(1vw, 1.17vh + (var(--groups) - 18) * 0.048vh); }	/* reach 1.9vh at group 32 */
+	.Sidebar					{ --aspect-ratio: min(1vw, 1.8vh + (var(--groups) - 18) * 0.1vh); }		/* reach 3.1vh at group 32 */
+	.Reset						{ --aspect-ratio: min(1vw, 1.48vh + (var(--groups) - 18) * 0.09vh); }	/* reach 2.75vh at group 32 */
+}
+#Ptable > li > em ,#CloseUp > output > em{
+	font-family:"taozhiyuFont"
+}
+@media (max-width: 768px) { /* Also in --min */
+	main > article			{ overflow-x: auto; }
+}
+@media (max-width: 1365px) { /* --min * --groupfactor */
+	:root:not([data-wide="0"]) main > article { overflow-x: auto; }
+}
+
+@media (max-width: 550px), (display-mode: standalone) {
+	.MenuButton + label		{ display: flex; padding-inline-start: var(--margin); }
+	footer					{ display: flex; flex-direction: column; visibility: hidden; transform: translateX(-100%); z-index: 2; position: absolute; top: calc(2 * var(--2margin) + var(--tab-height)); bottom: 0; font-size: 3vh; margin: 0; padding: 3vh; background-color: inherit; box-shadow: 0 19px 38px var(--darkshadow), 0 15px 12px var(--lightshadow); }
+	addr					{ flex-basis: unset; }
+	addr > span				{ display: none; }
+	footer.Menu				{ transform: translateX(0); visibility: visible; }
+}
+
+@media (max-width: 550px) {
+	/* Mobile */
+	:root {
+		--square:			33vh;
+		--min-rows:			2.5;
+		--margin:			1.7vw;
+		--icon-height:		5vw;
+		--track-height:		var(--2margin);
+		--bordercolor:		transparent;
+		--element-pad:		0.15em;
+	}
+	.KeyRegion {
+		--margin:			4.5px; /* Table has a min-width on mobile of 1024 pixels? */
+		--2margin:			calc(var(--margin) * 2);
+	}
+	:root.Dark { }
+
+	html, body				{ background-color: var(--blocks); }
+	header, .Slider			{ background-color: var(--body-bg); }
+	header, aside			{ min-width: unset; }
+	footer > :first-child	{ display: initial; }
+
+	aside					{ min-height: calc(var(--row-height) * var(--min-rows)); }
+	aside canvas			{ height: unset; }
+	.Reset aside			{ --min-rows: 0; }
+	main aside figure		{ display: none; }
+	.DataRegion > *, .Slider{ font-size: 120%; padding: 0; }
+	nav						{ --tab-height: 6vw; position: fixed; bottom: 0; width: 100%; z-index: 2; align-items: center; background-color: inherit; }
+	.adsbygoogle[data-adsbygoogle-status="done"],
+	nav :checked + label	{ box-shadow: none; }
+	nav > label				{ flex-direction: column; text-align: center; flex-basis: calc(100% / 4); }
+	header > label			{ color: var(--group); }
+	header > * > svg + a	{ display: none; }
+	header svg + a			{ margin-inline-start: 0; }
+	.FillMask				{ fill: var(--body-bg); }
+
+	.Raised + label			{ display: none; }
+	.MenuButton + label		{ margin-inline-end: auto; }
+
+	.RangeNumbers input:not(:first-of-type),
+	.RangeNumbers label:not(:first-of-type)	{ display: none; } /* FIX: Show temp matching their degree dropdown */
+
+	.SearchConsole			{ z-index: 2; top: 0; display: flex; align-items: center; margin: 0 calc(2 * var(--2margin)); right: var(--tab-height); background-color: var(--body-bg); justify-content: flex-end; opacity: 0; width: unset; transform: none; }
+	.SearchActive header				{ position: sticky; top: 0; z-index: 2; }
+	.SearchActive .SearchConsole		{ position: fixed; opacity: 1; align-items: center; }
+	.SearchActive .MenuButton + label	{ margin-inline-end: 0; }
+	.SearchActive .SearchConsole ul		{ display: none; }
+	.SearchConsole > [type=search]		{ max-width: 0; }
+	.SearchActive [type=search]			{ max-width: 10em; }
+
+	ol, nav					{ box-shadow: 0 1px 3px var(--lightshadow), 0 1px 2px var(--darkshadow); }
+	main, main > article, ol{ margin: 0; }
+
+	.DataRegion::before		{ background: none; box-shadow: inset 0 0 4px var(--lightshadow), inset 0 0 3px var(--darkshadow); bottom: 0; height: unset; pointer-events: none; }
+	.DataRegion::after		{ display: none; }
+	.DataRegion ul			{ display: initial; }
+	article .Slider			{ touch-action: pan-y pinch-zoom; left: 0; margin-inline-start: 0; }
+	[dir="rtl"] article .Slider	{ left: unset; right: 0; }
+	.Slider [type="button"]	{ display: none; }
+
+	nav						{ height: 12vw; }
+	header, .SearchConsole	{ height: 12vw; margin-bottom: 0; }
+	footer					{ top: 12vw; }
+	main					{ max-height: calc(100vh - 12vw); }
+	main > article			{ flex-shrink: 0; margin-bottom: 12vw; }
+
+	ol > li > abbr,
+	ol > li:not(.Tope),
+	ul > input:checked + li	{ transition: none !important; }
+	.SearchActive article ol,
+	ol.Tilt					{ transform: none; }
+}
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        background-color: var(--scrool-bar-color);
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+        background-color: var(--scrool-bar-color);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+        background-color: var(--scrool-bar-thumb-color);
+    }
+/* font-variant-numeric: tabular-nums; MAYBE */
+  </style>
+  <link rel="stylesheet" href="./css/interactive-b9dc29f.css" media="print" onload="this.media='all'; this.onload = null;">
+
+  <!-- <script nomodule>window.location.replace("https://old.ptable.com/");</script> -->
+  <!-- <script type="module">if (!("reversed" in document.createElement("ol"))) window.location.replace("https://old.ptable.com/");</script> -->
+
+  <!-- <script defer src="https://d2wy8f7a9ursnm.cloudfront.net/v7/bugsnag.min.js"></script> -->
+  <script defer src="data:text/javascript,
+  if (window.Bugsnag) {
+  	window.Bugsnag.start({apiKey: '89a7744f0a74c197fd23f560afed1170', releaseStage: 'production', appVersion: 'new-e8a7978', metadata: { lang: 'zh' } });
+  }
+  function reportError(e) {
+  	if (window.Bugsnag) Bugsnag.notify(e);
+  	else console.log(e);
+  }"></script>
+
+  <script type="module" src="./js/required-3e873030.js"></script>
+  <link rel="modulepreload" href="./js/extra-59fbde3d.js">
+ </head>
+ <body>
+ <!-- toggled classes: Overlay, SearchActive -->
+
+<h1>元素周期表</h1>
+<header>
+ <input type="checkbox" id="Menu" name="Menu" class="Button Flat MenuButton"><label for="Menu"><svg viewBox="0 0 100 100">
+ <title>Menu</title>
+ <style>
+  .MenuButton + label rect						{ transform-origin: center; transition: transform 0.2s linear; stroke: none; }
+  .MenuButton:checked + label rect:first-child	{ transform: rotate(-39deg) scaleX(0.75) translateY(3%); }
+  .MenuButton:checked + label rect:last-child	{ transform: rotate(39deg) scaleX(0.75) translateY(-3%); }
+ </style>
+ <g>
+  <rect x="10" y="20" rx="4.5" ry="4.5" width="80" height="9"/>
+  <rect x="10" y="45.5" rx="4.5" ry="4.5" width="80" height="9"/>
+  <rect x="10" y="71" rx="4.5" ry="4.5" width="80" height="9"/>
+ </g>
+</svg>
+</label>
+ <input type="radio" id="ResetTab" name="Tab" class="Logo"><label for="ResetTab"><a href="#" alt="Ptable">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 121.1">
+ <defs>
+  <style>
+   .Square	{ fill: url(#lgrad); }
+   .Pt		{ fill: white; paint-order: stroke; stroke: rgb(255, 255, 255, 0.4); stroke-width: 6; }
+   .able	{ fill: #003660; paint-order: stroke; stroke: white; stroke-width: 6; /*vector-effect: non-scaling-stroke;*/ }
+  </style>
+  <linearGradient id="lgrad" y2="100%">
+   <stop offset="0" stop-color="rgb(45,190,252)" />
+   <stop offset="1" stop-color="rgb(2,118,253)" />
+  </linearGradient>
+ </defs>
+ <rect class="Square" width="121.1" height="121.1"/>
+ <g class="Pt">
+  <path d="M25,93.38V27.71H46.3q12.09,0,15.77,1a17.2,17.2,0,0,1,9.45,6.43q3.81,4.95,3.81,12.79a21.29,21.29,0,0,1-2.2,10.16,18,18,0,0,1-5.57,6.48,19.26,19.26,0,0,1-6.88,3.11,75.46,75.46,0,0,1-13.75.94H38.28V93.38ZM38.28,38.82V57.46h7.26c5.22,0,8.72-.35,10.48-1a8.69,8.69,0,0,0,4.14-3.23,8.8,8.8,0,0,0,1.5-5.1,8.52,8.52,0,0,0-2.1-5.92,9.18,9.18,0,0,0-5.33-2.91,63.38,63.38,0,0,0-9.54-.45Z"/>
+  <path d="M104.27,45.81v10h-8.6V75a48.82,48.82,0,0,0,.24,6.78A2.75,2.75,0,0,0,97,83.39a3.58,3.58,0,0,0,2.13.63,16.14,16.14,0,0,0,5.06-1.21l1.08,9.77a25.11,25.11,0,0,1-10,1.88,15.76,15.76,0,0,1-6.13-1.14,9,9,0,0,1-4-3,11.73,11.73,0,0,1-1.77-4.91,61,61,0,0,1-.4-8.87V55.84H77.26v-10H83V36.36L95.67,29v16.8Z"/>
+ </g>
+ <g class="able">
+  <path d="M123,60.32,111.6,58.26q1.92-6.88,6.63-10.21t14-3.31q8.43,0,12.55,2a12.58,12.58,0,0,1,5.8,5.06q1.68,3.08,1.68,11.27l-.14,14.69A51.23,51.23,0,0,0,152.7,87,27,27,0,0,0,155,93.38H142.51c-.33-.83-.73-2.07-1.21-3.71-.21-.75-.36-1.24-.45-1.48a22.58,22.58,0,0,1-6.9,4.7,19.68,19.68,0,0,1-7.84,1.57c-4.9,0-8.75-1.33-11.58-4a13.26,13.26,0,0,1-4.23-10.08,13.49,13.49,0,0,1,1.93-7.19,12.61,12.61,0,0,1,5.39-4.84,43,43,0,0,1,10-2.93q8.82-1.65,12.22-3.09V61.09c0-2.42-.59-4.15-1.79-5.18s-3.45-1.54-6.76-1.54a9,9,0,0,0-5.24,1.32A9.15,9.15,0,0,0,123,60.32Zm16.84,10.22a78.71,78.71,0,0,1-7.66,1.92q-5.23,1.13-6.85,2.2a5.24,5.24,0,0,0-2.46,4.43,6.13,6.13,0,0,0,2,4.57,6.85,6.85,0,0,0,5,1.93,10.93,10.93,0,0,0,6.49-2.24,7.91,7.91,0,0,0,3-4.17,24.76,24.76,0,0,0,.49-6.13Z"/>
+  <path d="M160.43,93.38V27.71H173V51.37q5.82-6.63,13.79-6.63A18.52,18.52,0,0,1,201.19,51q5.7,6.3,5.69,18.07,0,12.2-5.8,18.77A18.11,18.11,0,0,1,187,94.46a17.44,17.44,0,0,1-8-2,19.31,19.31,0,0,1-6.83-6v7Zm12.5-24.81q0,7.38,2.33,10.93,3.27,5,8.69,5a8.9,8.9,0,0,0,7.1-3.56Q194,77.4,194,69.73q0-8.15-3-11.76a9.35,9.35,0,0,0-7.57-3.6,9.49,9.49,0,0,0-7.52,3.51Q172.93,61.4,172.93,68.57Z"/>
+  <path d="M213.34,93.38V27.71h12.58V93.38Z"/>
+  <path d="M262.7,78.24l12.55,2.11a20.58,20.58,0,0,1-7.64,10.5q-5.22,3.62-13.06,3.61-12.41,0-18.37-8.11-4.69-6.5-4.7-16.39,0-11.83,6.18-18.53a20.37,20.37,0,0,1,15.64-6.69q10.6,0,16.75,7t5.87,21.48H244.38q.13,5.59,3.05,8.71a9.54,9.54,0,0,0,7.25,3.11,7.75,7.75,0,0,0,5-1.61A10,10,0,0,0,262.7,78.24Zm.72-12.72q-.14-5.46-2.82-8.31a8.64,8.64,0,0,0-6.54-2.84,8.74,8.74,0,0,0-6.81,3q-2.69,3-2.64,8.15Z"/>
+ </g>
+</svg>
+
+
+ 	<!-- <img src="./icon/ptable-logo.svg" alt="Ptable"> -->
+ </a></label>
+ <nav>
+  <input type="radio" id="PropertyTab" name="Tab" checked><label for="PropertyTab"><svg viewBox="0 0 100 100">
+ <g>
+  <rect x="15" y="15" width="70" height="70" rx="5" fill="none" />
+  <line x1="27.5" x2="72.5" y1="32.5" y2="32.5" />
+  <line x1="27.5" x2="72.5" y1="50" y2="50" />
+  <line x1="27.5" x2="60" y1="67.5" y2="67.5" />
+ </g>
+</svg>
+<a href="#%E5%8C%96%E5%AD%A6%E6%80%A7%E8%B4%A8">化学性质</a></label>
+  <input type="radio" id="ElectronTab" name="Tab"><label for="ElectronTab"><svg viewBox="-50 -50 100 100">
+ <g class="Dots">
+  <circle cx="0" cy="17" r="4" />
+  <circle cx="0" cy="-17" r="4" />
+
+  <circle cx="0" cy="35" r="4" />
+  <circle cx="30.31" cy="17.5" r="4" />
+  <circle cx="30.31" cy="-17.5" r="4" />
+  <circle cx="0" cy="-35" r="4" />
+  <circle cx="-30.31" cy="-17.5" r="4" />
+  <circle cx="-30.31" cy="17.5" r="4" />
+ </g>
+ <g>
+  <g fill="none">
+   <path d="M 0 -35 A 35 35 0 1 0 0 35 A 35 35 0 1 0 0 -35 Z M 0 -17 A 17 17 0 1 1 0 17 A 17 17 0 1 1 0 -17 Z" />
+  </g>
+ </g>
+</svg>
+<a href="#%E7%94%B5%E5%AD%90%E5%B1%82%E6%8E%92%E5%B8%83">电子层排布</a></label>
+  <input type="radio" id="IsotopeTab" name="Tab"><label for="IsotopeTab"><svg viewBox="-50 -50 100 100">
+ <g class="FillMask">
+  <circle cx="9" cy="15.59" r="21" />
+  <circle cx="9" cy="-15.59" r="21" />
+  <circle cx="-18" cy="-0" r="21" />
+
+  <circle cx="19" cy="0" r="21" />
+  <circle cx="-9.5" cy="-16.45" r="21" />
+  <circle cx="-9.5" cy="16.45" r="21" />
+ </g>
+</svg>
+<a href="#%E5%90%8C%E4%BD%8D%E7%B4%A0">同位素</a></label>
+  <input type="radio" id="CompoundTab" name="Tab"><label for="CompoundTab"><svg viewBox="-50 -50 100 100">
+ <g>
+  <g fill="none">
+   <polygon points="-19.92 5.75,0 -5.75,0 -28.75,-19.92 -40.25,-39.84 -28.75,-39.84 -5.75" />
+   <polyline points="-19.92 -29.25,-30.31 -23.25,-30.31 -11.25" />
+
+   <polygon points="19.92 5.75,39.84 -5.75,39.84 -28.75,19.92 -40.25,0 -28.75,0 -5.75" />
+   <polyline points="19.92 -29.25,9.53 -23.25,9.53 -11.25" />
+
+   <polygon points="0 40.25,19.92 28.75,19.92 5.75,0 -5.75,-19.92 5.75,-19.92 28.75" />
+   <polyline points="0 5.25,-10.39 11.25,-10.39 23.25" />
+  </g>
+ </g>
+</svg>
+<a href="#%E5%8C%96%E5%90%88%E7%89%A9">化合物</a></label>
+ </nav>
+
+ <input type="checkbox" id="Wide" name="Wide" class="Button Raised WideButton"><label for="Wide"><svg viewBox="-1 -4 23 15">
+ <g>
+  <polygon points="0 0, 1 0, 1 1, 2 1, 2 5, 10 5, 10 3, 16 3, 16 1, 20 1, 20 0, 21 0, 21 7, 0 7" stroke="none" />
+ </g>
+</svg>
+<a>广大</a></label>
+
+ <input type="radio" id="TopbarToggle" name="Layout" class="Button Raised Left Toggle" checked><label for="TopbarToggle"><svg viewBox="0 0 100 100">
+ <title>Top bar</title>
+ <g>
+  <rect x="10" y="10" width="80" height="80" rx="8" fill="none" />
+  <line x1="37" x2="37" y1="10" y2="37" />
+  <line x1="10" x2="85" y1="37" y2="37" />
+ </g>
+</svg>
+</label>
+ <input type="radio" id="SidebarToggle" name="Layout" class="Button Raised Right Toggle"><label for="SidebarToggle"><svg viewBox="0 0 100 100">
+ <title>Side bar</title>
+ <g>
+  <rect x="10" y="10" width="80" height="80" rx="8" fill="none" />
+  <line x1="37" x2="37" y1="10" y2="90" />
+  <line x1="10" x2="37" y1="37" y2="37" />
+ </g>
+</svg>
+</label>
+
+ <input type="checkbox" id="DarkButton" name="Dark" class="Button Raised"><label for="DarkButton"><svg viewBox="-50 -50 100 100">
+ <title>Dark</title>
+ <defs>
+  <mask id="Moon">
+   <rect x="-50" y="-50" width="100" height="100" fill="white" />
+   <circle cx="40" cy="-15" r="45" fill="black" />
+  </mask>
+ </defs>
+ <g>
+  <circle cx="10" cy="0" r="45" mask="url(#Moon)" stroke="none" />
+ </g>
+</svg>
+</label>
+
+ <input type="checkbox" id="SearchButton" class="Button Flat" name="Search"><label for="SearchButton"><svg viewBox="-50 -50 100 100" class="Magnify">
+ <title>Search</title>
+ <style>
+  .Magnify *	{ transition: all 0.6s cubic-bezier(0.2,1,0.3,1); }
+  :checked + label > .Magnify .Circle	{ cx: 0; cy: 0; ry: 0.1; rx: 40; transform: rotate(-45deg); }
+  :checked + label > .Magnify .Line		{ cx: 0; cy: 0; rx: 40; transform: rotate(45deg) !important; transform-origin: 0 0 !important; }
+ </style>
+ <g>
+  <ellipse class="Circle" cx="-10" cy="-10" rx="25" ry="25" fill="none" />
+  <ellipse class="Line" cx=18.84 cy=21.34 rx=17.64 style="transform: rotate(50.8deg); transform-origin: 18.84% 21.34%;" ry="0.1" />
+ </g>
+</svg>
+</label>
+</header>
+
+<!-- <section id="Notice" class="Notice"> -->
+ <!-- <ins class="adsbygoogle" data-ad-client="ca-pub-1899956715581914" data-ad-slot="1123424162" data-ad-format="horizontal" data-full-width-responsive="true"></ins> -->
+<!-- <ins class="adsbygoogle" id="div-gpt-ad-Top"></ins> -->
+ <!-- <blockquote id="NoticeText"> -->
+ <!-- <noscript>Enable JavaScript for a <a href="https://www.youtube.com/watch?v=EX56SP-lTHc">plethora of interactivity</a> including property trend visualization, thousands of isotopes, mixing of compound, and 3D orbital diagrams.</noscript> -->
+ <!-- Don't like ads? No problem! Ptable will always be free for everyone. Find yourself here daily? Consider either unblocking the single ad banner, <a href="https://www.patreon.com/bePatron?u=6102731">donating $1 a month</a> (<a href="https://www.patreon.com/oauth2/authorize?response_type=code&client_id=sN8bpQO5TsIYTlhXxjS3-ZLYdtqZOHgjiPC928SlNyQLBnafLFEfj1rmMDjcnO3A&redirect_uri=https%3A%2F%2Fptable.com%2Fdonate%2F">log in after donating</a>), or <a href="/poster/">buying a poster or wallet card</a>, order number <form style="display: inline;" method="get" action="/donate/"><input type="text" name="order" size="5"> <input type="submit" value="Hide ads"></form></blockquote> -->
+ <!-- <button></button> -->
+<!-- </section> -->
+
+<main class="AlphaEmission ProtonEmission TwoProtonEmission NeutronEmission TwoNeutronEmission SpontaneousFission BetaDecay DoubleBetaDecay BetaPlusDecay DoubleBetaPlusDecay ElectronCapture Stable">
+<!-- toggled classes: [DecayMode WIPED] -->
+
+<aside class="Alkali Alkaline Lanthanoid Actinoid Transition Poor Metalloid Nonmetal Noble Unknown">
+ <figure id="CloseUp">
+  <output>
+   <b></b><abbr><span><sup></sup><sub></sub></span></abbr><em><a></a></em><data></data>
+  </output>
+  <small><span></span><span></span><span></span><span></span><span></span><span></span><span></span></small>
+ </figure>
+
+ <section id="DataRegion" class="DataRegion">
+
+<ul id="Reset" class="Resets" data-schemeunknown="var(--nodata)">
+ <input type="radio" name="Reset" value="series" checked>
+ <li>
+  <label><span></span></label>
+  <output></output>
+ </li>
+</ul>
+
+<ul id="Property" class="Properties" data-schemeunknown="var(--nodata)">
+ <input type="radio" name="Property" id="t_series" value="series" checked>
+ <li>
+  <label for="t_series"><span>序列</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Property" id="t_name" value="name" data-schemevaluesOFF="Photos=#A00,Videos=#AA0" data-help="选择一个元素以从维基镜像中打开其内容。">
+ <li>
+  <label for="t_name"><span>名称</span></label>
+  <output id="AsideWriteup"><a href="http://zh.wiki.sxisa.org/wiki/"></a></output>
+  <select><option value="Wikipedia">维基镜像</option></select> </li>
+
+ <input type="radio" name="Property" id="t_state" value="state" data-schemevalues="Solid=var(--solid),Liquid=var(--liquid),Gas=var(--gas),UnknownState=var(--unknown)" data-help="选择一个温度以查看该温度和1个大气压下所有元素的物质状态。">
+ <li>
+  <label for="t_state"><span>在</span> <input id="Temperature" data-unit="C" type="number" min="-273" max="5727" value="0"><select class="Temperature"><option value="C">°C</option><option value="F">°F</option> <option value="K">K</option></select><span>为</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Property" id="t_weight" value="weight" data-schemestart="var(--blocks)" data-schemeend="var(--weight-end)" data-schemescale="lin" data-help="重量是每种元素的同位素在地球上的丰度的加权平均值。">
+ <li>
+  <label for="t_weight"><span>原子质量</span></label>
+  <output></output>
+  <select class="AMU"><option value="u">u</option></select> </li>
+
+ <input type="radio" name="Property" id="t_electrons" value="electrons" data-schemestart="var(--electrons-start)" data-schemeend="var(--electrons-end)" data-schemescale="lin" data-help="元素由其外部能级中的电子数着色。">
+ <li>
+  <label for="t_electrons"><span>能量水平</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Property" id="t_electroneg" value="electroneg" data-schemestart="var(--electroneg-start)" data-schemeend="var(--electroneg-end)" data-schemescale="log" data-help="电负性测量一个原子将一个共享的电子对朝自己吸引的趋势。">
+ <li>
+  <label for="t_electroneg"><span>鲍林标度</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Property" id="t_melt" value="melt" data-schemestart="var(--meltboil-start)" data-schemezero="var(--blocks)" data-schemeend="var(--meltboil-end)" data-schemescale="lin" data-help="较深的颜色表示元素的熔点比选定温度低（蓝色）或热（红色）。">
+ <li>
+  <label for="t_melt"><span>熔点</span></label>
+  <output></output>
+  <select class="Temperature"><option value="C">°C</option><option value="F">°F</option><option value="K">K</option></select> </li>
+
+ <input type="radio" name="Property" id="t_boil" value="boil" data-schemestart="var(--meltboil-start)" data-schemezero="var(--blocks)" data-schemeend="var(--meltboil-end)" data-schemescale="lin" data-help="较深的颜色表示元素的沸点比所选温度冷（蓝色）或热（红色）。">
+ <li>
+  <label for="t_boil"><span>沸点</span></label>
+  <output></output>
+  <select class="Temperature"><option value="C">°C</option><option value="F">°F</option><option value="K">K</option></select> </li>
+
+ <input type="radio" name="Property" id="t_affinity" value="affinity" data-schemestart="var(--blocks)" data-schemeend="var(--affinity-end)" data-schemescale="log" data-help="电子亲和力是当电子以气态连接到中性原子形成负离子时释放的能量。">
+ <li>
+  <label for="t_affinity"><span>电子亲合能</span></label>
+  <output></output>
+  <select class="Energy"><option value="kJ">kJ/mol</option><option value="eV">eV</option></select> </li>
+
+ <input type="radio" name="Property" id="t_ionize" value="ionize" data-schemestart="var(--ionize-start)" data-schemeend="var(--ionize-end)" data-schemescale="log" data-help="电离能是去除中性原子最松散结合的电子所需的最小能量。">
+ <li>
+  <label for="t_ionize"><span>电离能</span>：<select><option value="1">第1</option><option value="2">第2</option><option value="3">第3</option><option value="4">第4</option><option value="5">第5</option><option value="6">第6</option><option value="7">第7</option><option value="8">第8</option><option value="9">第9</option><option value="10">第10</option><option value="11">第11</option><option value="12">第12</option><option value="13">第13</option><option value="14">第14</option><option value="15">第15</option><option value="16">第16</option><option value="17">第17</option><option value="18">第18</option><option value="19">第19</option><option value="20">第20</option><option value="21">第21</option><option value="22">第22</option><option value="23">第23</option><option value="24">第24</option><option value="25">第25</option><option value="26">第26</option><option value="27">第27</option><option value="28">第28</option><option value="29">第29</option><option value="30">第30</option></select></label>
+  <output></output>
+  <select class="Energy"><option value="kJ">kJ/mol</option><option value="eV">eV</option></select> </li>
+
+ <input type="radio" name="Property" id="t_radius" value="radius" data-schemestart="var(--radius-start)" data-schemeend="var(--radius-end)" data-schemescale="lin" data-help="半径测量从原子核中心到电子周围壳的边界的原子大小。">
+ <li>
+  <label for="t_radius"><span>半径</span>：<select><option value="calculated">calculated</option><option value="empirical">empirical</option><option value="covalent">共价半径</option><option value="vanderwaals">范德华半径</option></select></label>
+  <output></output>
+  <select class="Length"><option value="pm">pm</option></select> </li>
+
+ <input type="radio" name="Property" id="t_hardness" value="hardness" data-schemestart="var(--blocks)" data-schemeend="var(--hardness-end)" data-schemescale="log" data-help="硬度是指元件对由于尖锐物体产生的摩擦或压缩而产生的材料变形的抵抗力。">
+ <li>
+  <label for="t_hardness"><span>硬度</span>：<select><option value="brinell">布氏硬度</option><option value="mohs">莫氏硬度</option><option value="vickers">维氏硬度</option></select></label>
+  <output></output>
+  <select class="Hardness"><option value="MPa">MPa</option></select> </li>
+
+ <input type="radio" name="Property" id="t_modulus" value="modulus" data-schemestart="var(--modulus-start)" data-schemeend="var(--modulus-end)" data-schemescale="lin" data-help="模量是单元刚度或抗压强度的量度。">
+ <li>
+  <label for="t_modulus"><span>模量强度</span>：<select><option value="bulk">弹性模量</option><option value="shear">剪切模量</option><option value="young">杨氏模量</option></select></label>
+  <output></output>
+  <select class="Modulus"><option value="GPa">GPa</option></select> </li>
+
+ <input type="radio" name="Property" id="t_density" value="density" data-schemestart="var(--density-start)" data-schemeend="var(--density-end)" data-schemescale="lin" data-help="密度是单位体积中元素质量的量度。">
+ <li>
+  <label for="t_density"><span>密度</span>：<select><option value="stp">标状</option><option value="liquid">液体</option></select></label>
+  <output></output>
+  <select class="Density"><option value="kg">kg/m³</option><option value="g">g/cm³</option></select> </li>
+
+ <input type="radio" name="Property" id="t_conductivity" value="conductivity" data-schemestart="var(--conduct-start)" data-schemeend="var(--conduct-end)" data-schemescale="lin" data-help="电导率是元素导电或导热能力的度量。">
+ <li class="thermal">
+  <label for="t_conductivity"><span>导电/热率</span>：<select><option value="thermal">导热率</option><option value="electric">电导率</option></select></label>
+  <output></output>
+  <select class="thermal"><option value="WmK">W/mK</option></select><select class="electric"><option value="MSm">MS/m</option></select> </li>
+
+ <input type="radio" name="Property" id="t_heat" value="heat" data-schemestart="var(--heat-start)" data-schemeend="var(--heat-end)" data-schemescale="lin" data-help="热量是改变元素状态（汽化，聚变）或提高其温度1K（特定值）所需的能量的量度。">
+ <li class="specific">
+  <label for="t_heat"><span>热</span>：<select><option value="specific" data-schemescale="log">比热容</option><option value="vaporization">汽化热</option><option value="fusion">熔解热</option></select></label>
+  <output></output>
+  <select class="specific"><option value="JkgK">J/kgK</option></select><select class="vaporization"><option value="kJ">kJ/mol</option><option value="eV">eV</option></select><select class="fusion"><option value="kJ">kJ/mol</option><option value="eV">eV</option></select> </li>
+
+ <input type="radio" name="Property" id="t_abundance" value="abundance" data-schemestart="var(--abundance-start)" data-schemeend="var(--abundance-end)" data-schemescale="log" data-help="丰度是元素相对于环境中所有其他元素的质量发生量的度量">
+ <li>
+  <label for="t_abundance"><span>丰度</span>：<select><option value="universe">宇宙丰度</option><option value="solar">太阳丰度</option><option value="meteor">流星丰度</option><option value="crust">地壳丰度</option><option value="ocean">海洋丰度</option><option value="human">人造丰度</option></select></label>
+  <output></output>
+  <select class="Percent"><option value="Percent">%</option></select> </li>
+
+ <input type="radio" name="Property" id="t_discover" value="discover" data-help="选择年份之后发现的元素将变暗。">
+ <li>
+  <label for="t_discover"><span>发现年份</span></label>
+  <output data-digitgrouping="false"></output>
+ </li>
+
+</ul>
+
+<ul id="Electron" class="Electrons" data-schemeunknown="var(--nodata)">
+ <input type="radio" name="Electrons" id="t_oxidation" value="oxidation" checked data-help="氧化态是元素形成化学化合物时添加到元素或从元素中移除的电子数。">
+ <li>
+  <label for="t_oxidation"><span>氧化态</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Electrons" id="t_electronstring" value="electronstring" data-help="电子构型是原子在原子轨道中的电子分布。">
+ <li>
+  <label for="t_electronstring"><span>分子空间结构</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Electrons" id="t_expandedconfig" value="expandedconfig" data-help="电子构型是原子在原子轨道中的电子分布。">
+ <li class="HideStart">
+  <label for="t_expandedconfig"><span>延伸型价电子层</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Electrons" id="t_energy" value="electrons" data-help="每个能级表示具有给定主量子数的总电子数(𝑛).">
+ <li>
+  <label for="t_energy"><span>能级</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="Electrons" id="t_quantum" value="quantum" data-help="主（𝑛），方位角（𝑙），磁（𝑚）和自旋（𝑠）量子数完全描述了原子中的电子。">
+ <li>
+  <label for="t_quantum"><span>量子数</span></label>
+  <output></output>
+ </li>
+ <canvas id="Orbital" width="512" height="512"></canvas>
+</ul>
+
+<ul id="Isotope" class="Isotopes" data-schemeunknown="var(--nodata)">
+ <input type="radio" name="isotopes" id="t_isotopes" value="isotopes" data-schemevalues="MATCHES=" checked data-help="代替重量的数字表示每种元素的已知同位素的总数。">
+ <li>
+  <label for="t_isotopes"><span>数量</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="isotopes" id="t_isoname" value="isoname" disabled data-help="选择一个同位素以从维基镜像中打开（英文，请在弹出页面左下角选择中文）">
+ <li>
+  <label for="t_isoname"><span>名称</span></label>
+  <output id="AsideWriteupIso"><a href="https://en.wikipedia.org/"></a></output>
+ </li>
+
+ <input type="hidden" name="isotopes" id="t_isowiki" value="isowiki" disabled>
+
+ <input type="radio" name="isotopes" id="t_isomass" value="isomass" data-schemestart="var(--blocks)" data-schemeend="var(--weight-end)" data-schemescale="lin" disabled data-help="质量以碳-12原子的十二分之一为单位测量同位素的质量。">
+ <li>
+  <label for="t_isomass"><span>相对分子质量</span></label>
+  <output></output>
+  <select class="AMU"><option value="u">u</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_excess" value="excess" data-schemestart="var(--blocks)" data-schemeend="var(--electrons-end)" data-schemescale="lin" disabled data-help="质量过剩是同位素的实际质量与原子质量单位的质量数之差。">
+ <li>
+  <label for="t_excess"><span>质量欠缺</span></label>
+  <output></output>
+  <select class="Binding"><option value="MeV">MeV</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_binding" value="binding" data-schemestart="var(--blocks)" data-schemeend="var(--affinity-end)" data-schemescale="lin" disabled data-help="结合能是将原子核分解成自由的，未结合的组成中子和质子所需的能量。">
+ <li>
+  <label for="t_binding"><span>结合能</span></label>
+  <output></output>
+  <select class="Binding"><option value="MeV">MeV</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_masscontrib" value="masscontrib" data-schemestart="var(--blocks)" data-schemeend="var(--radius-end)" data-schemescale="log" disabled data-help="丰度测量同位素代表地球上元素的百分比。">
+ <li>
+  <label for="t_masscontrib"><span>丰度</span></label>
+  <output></output>
+  <select class="Percent"><option value="Percent">%</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_halflife" value="halflife" data-schemestart="var(--blocks)" data-schemeend="var(--modulus-end)" data-schemescale="log" disabled data-help="半衰期是放射性衰变将原子数量减少到其初始值的一半所需的时间。">
+ <li>
+  <label for="t_halflife"><span>半衰期</span></label>
+  <output></output>
+  <select class="Half-Life"><option value="auto">自动</option><option value="y">y</option><option value="d">d</option><option value="h">h</option><option value="min">min</option><option value="s">s</option><option value="ms">ms</option><option value="µs">µs</option><option value="ns">ns</option><option value="ps" selected>ps</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_decaymode" value="decaymode" disabled data-help="初级衰变模式是同位素具有最大分支比的衰变方法。">
+ <li>
+  <label for="t_decaymode"><span>衰减模式</span></label>
+  <output></output>
+ </li>
+
+ <input type="radio" name="isotopes" id="t_width" value="width" data-schemestart="var(--blocks)" data-schemeend="var(--density-end)" data-schemescale="log" disabled data-help="衰减宽度测量的是同位素剩余质量能的不确定性。">
+ <li>
+  <label for="t_width"><span>衰减宽度</span></label>
+  <output></output>
+  <select class="Binding"><option value="MeV">MeV</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_specificactivity" value="specificactivity" data-schemestart="var(--blocks)" data-schemeend="var(--conduct-end)" data-schemescale="log" disabled data-help="比活度是一定数量的同位素每秒的放射性转化数。">
+ <li>
+  <label for="t_specificactivity"><span>具体活动</span></label>
+  <output></output>
+  <select class="Activity"><option value="Bqg">Bq/g</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_magneticmoment" value="magneticmoment" data-schemestart="var(--blocks)" data-schemeend="var(--abundance-end)" data-schemescale="lin" disabled data-help="同位素核的磁矩来自质子和中子的自旋。">
+ <li>
+  <label for="t_magneticmoment"><span>磁矩</span></label>
+  <output></output>
+  <select class="NuclearMagnetons"><option value="un">μɴ</option></select> </li>
+
+ <input type="radio" name="isotopes" id="t_quadrupolemoment" value="quadrupolemoment" data-schemestart="var(--blocks)" data-schemeend="var(--hardness-end)" data-schemescale="lin" disabled data-help="同位素核的核电四极矩来自质子和中子的自旋。">
+ <li>
+  <label for="t_quadrupolemoment"><span>核电四极矩</span></label>
+  <output></output>
+  <select class="Barn"><option value="b">b</option></select> </li>
+</ul>
+
+<ul id="Compound" class="Compounds" data-schemeunknown="var(--blocks)">
+ <input type="radio" name="compounds" value="compounds" data-schemevalues="MATCHES=" checked data-help="代替权重的数字表示通过将该元素添加到化合物搜索中而形成的化合物数量。">
+ <li>
+  <label><span></span></label>
+  <output></output>
+ </li>
+</ul>
+<ul id="CompoundResults" class="CompoundResults" data-placeholder="所选元素不能形成任何化合物">
+<ul>
+
+ </section> <!-- DataRegion -->
+</aside>
+
+<article id="PropertyClass" class="series"> <!-- Nested so flex-direction can treat this as a group when flipping from top to sidebar. -->
+<!-- toggled classes: [property WIPED] -->
+
+ <section id="SliderTemp" class="Slider SliderTemp">
+  <label for="TempRange" title="Reset to STP">温度</label>
+  <input type="button" id="TempSub" value="－" data-skip="-1">
+  <input type="range" data-unit="C" id="TempRange" class="TempRange" min="-273" max="5727" value="0">
+  <input type="button" id="TempAdd" value="＋" data-skip="+1">
+  <div class="RangeNumbers">
+   <input type="number" data-unit="C" id="Celsius" min="-273" max="5727" value="0"><label for="Celsius">°C</label>
+   <input type="number" data-unit="F" id="Fahrenheit" min="-460" max="10341" value="32"><label for="Fahrenheit">°F</label>
+   <input type="number" data-unit="K" id="Kelvin" min="0" max="6000" value="273"><label for="Kelvin">K</label>
+  </div>
+ </section>
+
+ <section id="SliderYear" class="Slider SliderYear">
+  <label for="YearRange">年</label>
+  <input type="button" id="YearSub" value="－" data-skip="-1">
+  <input type="range" id="YearRange" class="YearRange" min="1730" max="2020" value="2020">
+  <input type="button" id="YearAdd" value="＋" data-skip="+1">
+  <div class="RangeNumbers">
+   <input type="number" id="Year" min="1730" max="2020" value="2020"><label for="Year">CE</label>
+  </div>
+ </section>
+
+ <div class="SearchAnchor"> <!-- Nested to provide origin or slider won't push search down. -->
+  <section id="SearchConsole" class="SearchConsole">
+   <input type="search" id="SearchBox" class="SearchBox" data-placeholderatomic="79" data-placeholderproperty="<20, =7, 3-10">
+   <ul id="SearchType">
+	<span>搜索：</span>
+    <input type="radio" name="searchtype" value="atomic" id="AtomicSearch">
+    <li><label for="AtomicSearch">原子数</label></li>
+    <input type="radio" name="searchtype" value="property" id="PropertySearch" checked>
+    <li><label for="PropertySearch">属性值</label></li>
+   </ul>
+  </section>
+ </div>
+
+<ol id="Ptable" class="Hover Alkali Alkaline Lanthanoid Actinoid Transition Poor Metalloid Nonmetal Noble Unknown s p d f" data-classes="Alkali Alkaline Lanthanoid Actinoid Transition Poor Metalloid Nonmetal Noble Unknown s p d f" dir="ltr">
+<!-- toggled classes: Hover, Fanned, Tilt, Delay, Shine, [Series], [Block] -->
+<div class="Group"></div>
+<div class="Group">1</div>
+<div class="Group">2</div>
+<div class="Group G3">3</div>
+<div class="Group">4</div>
+<div class="Group">5</div>
+<div class="Group">6</div>
+<div class="Group">7</div>
+<div class="Group">8</div>
+<div class="Group">9</div>
+<div class="Group">10</div>
+<div class="Group">11</div>
+<div class="Group">12</div>
+<div class="Group">13</div>
+<div class="Group">14</div>
+<div class="Group">15<a href="http://zh.wiki.sxisa.org/wiki/%E6%B0%AE%E6%97%8F%E5%85%83%E7%B4%A0">氮族元素</a></div>
+<div class="Group">16<a href="http://zh.wiki.sxisa.org/wiki/%E6%B0%A7%E6%97%8F%E5%85%83%E7%B4%A0">氧族元素</a></div>
+<div class="Group">17<a href="http://zh.wiki.sxisa.org/wiki/%E5%8D%A4%E7%B4%A0">卤素</a></div>
+<div class="Group">18</div>
+<section id="KeyRegion" class="KeyRegion" dir="ltr">
+<div id="SeriesState" class="SeriesState">
+ <dl id="StateOfMatter" class="StateKey StateOfMatter">
+  <div>
+   <dt class="Solid" data-state="固体">C</dt>
+   <dd>固体</dd>
+  </div>
+  <div>
+   <dt class="Liquid" data-state="液体">Hg</dt>
+   <dd>液体</dd>
+  </div>
+  <div>
+   <dt class="Gas" data-state="气体">H</dt>
+   <dd>气体</dd>
+  </div>
+  <div>
+   <dt class="UnknownState" data-state="未知">Rf</dt>
+   <dd>未知</dd>
+  </div>
+ </dl>
+ <dl id="Series" class="Series" dir="ltr">
+  <dt class="Metals" data-classes="Alkali Alkaline Lanthanoid Actinoid Transition Poor"><a href="http://zh.wiki.sxisa.org/wiki/%E9%87%91%E5%B1%9E">金属</a></dt>
+  <dd class="Alkali"><a href="http://zh.wiki.sxisa.org/wiki/%E7%A2%B1%E9%87%91%E5%B1%9E">碱金属</a></dd>
+  <dd class="Alkaline"><a href="http://zh.wiki.sxisa.org/wiki/%E7%A2%B1%E5%9C%9F%E9%87%91%E5%B1%9E">碱土金属</a></dd>
+  <dd class="Lanthanoid"><a href="http://zh.wiki.sxisa.org/wiki/%E9%95%A7%E7%B3%BB%E5%85%83%E7%B4%A0">镧系元素</a></dd>
+  <dd class="Actinoid"><a href="http://zh.wiki.sxisa.org/wiki/%E9%94%95%E7%B3%BB%E5%85%83%E7%B4%A0">锕系元素</a></dd>
+  <dd class="Transition"><a href="http://zh.wiki.sxisa.org/wiki/%E8%BF%87%E6%B8%A1%E9%87%91%E5%B1%9E">过渡金属</a></dd>
+  <dd class="Poor"><a href="http://zh.wiki.sxisa.org/wiki/贫金属">贫金属</a></dd>
+  <dt class="Metalloid"><a href="http://zh.wiki.sxisa.org/wiki/%E7%B1%BB%E9%87%91%E5%B1%9E">类金属</a></dt>
+  <dt class="Nonmetals" data-classes="Nonmetal Noble"><a href="http://zh.wiki.sxisa.org/wiki/%E9%9D%9E%E9%87%91%E5%B1%9E%E5%85%83%E7%B4%A0">非金属元素</a></dt>
+  <dd class="Nonmetal"><a href="http://zh.wiki.sxisa.org/wiki/%E9%9D%9E%E9%87%91%E5%B1%9E">非金属</a></dd>
+  <dd class="Noble"><a href="http://zh.wiki.sxisa.org/wiki/%E7%A8%80%E6%9C%89%E6%B0%94%E4%BD%93">稀有气体</a></dd>
+ </dl>
+</div>
+
+<div id="PropertyKey" class="PropertyKey">
+ <dl class="Colors">
+  <legend>颜色</legend>
+  <div>
+   <div>
+    <div><label for="SchemeStart">最小值</label> <input type="color" name="SchemeStart" id="SchemeStart"></div>
+    <div><label for="SchemeZero">0</label> <input type="color" name="SchemeZero" id="SchemeZero"></div>
+    <div><label for="SchemeEnd">最大值</label> <input type="color" name="SchemeEnd" id="SchemeEnd"></div>
+   </div>
+   <div id="RangeGradient"></div>
+  </div>
+  <div>
+   <div>
+    <div><label for="SchemeUnknown">未知</label> <input type="color" name="SchemeUnknown" id="SchemeUnknown"></div>
+   </div>
+   <div id="UnknownSwatch"></div>
+  </div>
+ </dl>
+
+<!--
+ <dl>
+  <legend>Scheme</legend>
+  <ul>
+   <input id="SchemeReset" type="button" value="Reset">
+   <input type="button" value="Save">
+  </ul>
+ </dl>
+-->
+
+ <dl>
+  <legend>关系</legend>
+  <ul id="SchemeScale" class="SchemeScale">
+   <input type="radio" name="SchemeScale" id="Linear" value="lin">
+   <li><label for="Linear">线性关系</label></li>
+
+   <input type="radio" name="SchemeScale" id="Logarithmic" value="log">
+   <li><label for="Logarithmic">对数关系</label></li>
+<!--
+   <input type="radio" name="SchemeScale" id="Exponential" value="exp">
+   <li><label for="Exponential">Exponential</label></li>
+-->
+  </ul>
+ </dl>
+</div>
+
+<div class="ElectronKey">
+ <dl id="Blocks" class="StateKey Blocks">
+  <div>
+   <dt class="s">s</dt>
+   <dd>区</dd>
+  </div>
+  <div>
+   <dt class="p">p</dt>
+   <dd>区</dd>
+  </div>
+  <div>
+   <dt class="d">d</dt>
+   <dd>区</dd>
+  </div>
+  <div>
+   <dt class="f">f</dt>
+   <dd>区</dd>
+  </div>
+ </dl>
+
+ <div id="ConfigBlocks" class="ConfigBlocks" dir="ltr">
+  <div class="BlockS">
+   <div><span>1s</span> <div></div></div>
+   <div><span>2s</span> <div></div></div>
+   <div><span>3s</span> <div></div></div>
+   <div><span>4s</span> <div></div></div>
+   <div><span>5s</span> <div></div></div>
+   <div><span>6s</span> <div></div></div>
+   <div><span>7s</span> <div></div></div>
+  </div>
+  <div class="BlockP">
+   <div><span>2p</span> <div></div><div></div><div></div></div>
+   <div><span>3p</span> <div></div><div></div><div></div></div>
+   <div><span>4p</span> <div></div><div></div><div></div></div>
+   <div><span>5p</span> <div></div><div></div><div></div></div>
+   <div><span>6p</span> <div></div><div></div><div></div></div>
+   <div><span>7p</span> <div></div><div></div><div></div></div>
+  </div>
+  <div class="BlockD">
+   <div><span>3d</span> <div></div><div></div><div></div><div></div><div></div></div>
+   <div><span>4d</span> <div></div><div></div><div></div><div></div><div></div></div>
+   <div><span>5d</span> <div></div><div></div><div></div><div></div><div></div></div>
+   <div><span>6d</span> <div></div><div></div><div></div><div></div><div></div></div>
+  </div>
+  <div class="BlockF">
+   <div><span>4f</span> <div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+   <div><span>5f</span> <div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  </div>
+ </div>
+</div>
+
+<div class="IsotopeKey">
+ <div data-placeholder="选择一个元素以显示所有已知的同位素，点击查看维基镜像（英文，请在弹出页面左下角选择中文）"></div>
+ <dl id="DecayModes" class="DecayModes StateKey">
+  <div>
+   <dt class="AlphaEmission">α</dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/%CE%91%E8%A1%B0%E5%8F%98">Α衰变</a></dd>
+  </div>
+  <div>
+   <dt class="TwoProtonEmission ProtonEmission">p</dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E8%B4%A8%E5%AD%90%E5%8F%91%E5%B0%84">质子发射</a></dd>
+  </div>
+  <div>
+   <dt class="TwoNeutronEmission NeutronEmission">n</dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E4%B8%AD%E5%AD%90%E7%99%BC%E5%B0%84">中子发射</a></dd>
+  </div>
+  <div>
+   <dt class="SpontaneousFission">SF</dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E8%87%AA%E7%99%BC%E8%A3%82%E8%AE%8A">自发裂变</a></dd>
+  </div>
+  <div>
+   <dt class="DoubleBetaDecay BetaDecay">ß⁻</dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/%CE%92%E8%A1%B0%E5%8F%98">Β衰变</a></dd>
+  </div>
+  <div>
+   <dt class="DoubleBetaPlusDecay BetaPlusDecay">ß⁺</dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E6%AD%A3%E7%94%B5%E5%AD%90%E5%8F%91%E5%B0%84">正电子发射</a></dd>
+  </div>
+  <div>
+   <dt class="ElectronCapture">ϵ</dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/电子俘获">电子俘获</a></dd>
+  </div>
+  <div>
+   <dt class="Stable"> </dt>
+   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E7%A8%B3%E5%AE%9A%E5%90%8C%E4%BD%8D%E7%B4%A0">稳定同位素</a></dd>
+  </div>
+  <button id="RemoveIsotopes">✕</button>
+ </dl>
+<!-- </div>-->
+</div>
+
+<div class="CompoundKey">
+ <div id="CompoundDragTarget" class="CompoundDragTarget" data-placeholder="将元素拖动到内部以创建化合物" data-placeholder-click="选择元素以创建化合物"></div>
+</div>
+
+</section> <!-- KeyRegion -->
+<div class="WideKeyRegion"></div>
+
+<div class="OldSlider"></div>
+
+<div id="Legend" class="Legend">
+<b>原子</b>
+<abbr>符号</abbr>
+<em>名称</em>
+<data>质量</data>
+</div>
+<div class="Period">1</div>
+<li class="Nonmetal s Gas">
+	<b>1</b>
+	<abbr>H</abbr>
+	<em>氢</em>
+	<data>1.008</data>
+</li>
+<li class="Noble s Gas">
+	<b>2</b>
+	<abbr>He</abbr>
+	<em>氦</em>
+	<data>4.0026</data>
+</li>
+<div class="Period">2</div>
+<li class="Alkali s Solid">
+	<b>3</b>
+	<abbr>Li</abbr>
+	<em>锂</em>
+	<data>6.94</data>
+</li>
+<li class="Alkaline s Solid">
+	<b>4</b>
+	<abbr>Be</abbr>
+	<em>铍</em>
+	<data>9.0122</data>
+</li>
+<li class="Metalloid p Solid">
+	<b>5</b>
+	<abbr>B</abbr>
+	<em>硼</em>
+	<data>10.81</data>
+</li>
+<li class="Nonmetal p Solid">
+	<b>6</b>
+	<abbr>C</abbr>
+	<em>碳</em>
+	<data>12.011</data>
+</li>
+<li class="Nonmetal p Gas">
+	<b>7</b>
+	<abbr>N</abbr>
+	<em>氮</em>
+	<data>14.007</data>
+</li>
+<li class="Nonmetal p Gas">
+	<b>8</b>
+	<abbr>O</abbr>
+	<em>氧</em>
+	<data>15.999</data>
+</li>
+<li class="Nonmetal p Gas">
+	<b>9</b>
+	<abbr>F</abbr>
+	<em>氟</em>
+	<data>18.998</data>
+</li>
+<li class="Noble p Gas">
+	<b>10</b>
+	<abbr>Ne</abbr>
+	<em>氖</em>
+	<data>20.180</data>
+</li>
+<div class="Period">3</div>
+<li class="Alkali s Solid">
+	<b>11</b>
+	<abbr>Na</abbr>
+	<em>钠</em>
+	<data>22.990</data>
+</li>
+<li class="Alkaline s Solid">
+	<b>12</b>
+	<abbr>Mg</abbr>
+	<em>镁</em>
+	<data>24.305</data>
+</li>
+<li class="Poor p Solid">
+	<b>13</b>
+	<abbr>Al</abbr>
+	<em>铝</em>
+	<data>26.982</data>
+</li>
+<li class="Metalloid p Solid">
+	<b>14</b>
+	<abbr>Si</abbr>
+	<em>硅</em>
+	<data>28.085</data>
+</li>
+<li class="Nonmetal p Solid">
+	<b>15</b>
+	<abbr>P</abbr>
+	<em>磷</em>
+	<data>30.974</data>
+</li>
+<li class="Nonmetal p Solid">
+	<b>16</b>
+	<abbr>S</abbr>
+	<em>硫</em>
+	<data>32.06</data>
+</li>
+<li class="Nonmetal p Gas">
+	<b>17</b>
+	<abbr>Cl</abbr>
+	<em>氯</em>
+	<data>35.45</data>
+</li>
+<li class="Noble p Gas">
+	<b>18</b>
+	<abbr>Ar</abbr>
+	<em>氩</em>
+	<data>39.948</data>
+</li>
+<div class="Period">4</div>
+<li class="Alkali s Solid">
+	<b>19</b>
+	<abbr>K</abbr>
+	<em>钾</em>
+	<data>39.098</data>
+</li>
+<li class="Alkaline s Solid">
+	<b>20</b>
+	<abbr>Ca</abbr>
+	<em>钙</em>
+	<data>40.078</data>
+</li>
+<div class="WideGap"></div>
+<li class="Transition d Solid">
+	<b>21</b>
+	<abbr>Sc</abbr>
+	<em>钪</em>
+	<data>44.956</data>
+</li>
+<li class="Transition d Solid">
+	<b>22</b>
+	<abbr>Ti</abbr>
+	<em>钛</em>
+	<data>47.867</data>
+</li>
+<li class="Transition d Solid">
+	<b>23</b>
+	<abbr>V</abbr>
+	<em>钒</em>
+	<data>50.942</data>
+</li>
+<li class="Transition d Solid">
+	<b>24</b>
+	<abbr>Cr</abbr>
+	<em>铬</em>
+	<data>51.996</data>
+</li>
+<li class="Transition d Solid">
+	<b>25</b>
+	<abbr>Mn</abbr>
+	<em>锰</em>
+	<data>54.938</data>
+</li>
+<li class="Transition d Solid">
+	<b>26</b>
+	<abbr>Fe</abbr>
+	<em>铁</em>
+	<data>55.845</data>
+</li>
+<li class="Transition d Solid">
+	<b>27</b>
+	<abbr>Co</abbr>
+	<em>钴</em>
+	<data>58.933</data>
+</li>
+<li class="Transition d Solid">
+	<b>28</b>
+	<abbr>Ni</abbr>
+	<em>镍</em>
+	<data>58.693</data>
+</li>
+<li class="Transition d Solid">
+	<b>29</b>
+	<abbr>Cu</abbr>
+	<em>铜</em>
+	<data>63.546</data>
+</li>
+<li class="Transition d Solid">
+	<b>30</b>
+	<abbr>Zn</abbr>
+	<em>锌</em>
+	<data>65.38</data>
+</li>
+<li class="Poor p Solid">
+	<b>31</b>
+	<abbr>Ga</abbr>
+	<em>镓</em>
+	<data>69.723</data>
+</li>
+<li class="Metalloid p Solid">
+	<b>32</b>
+	<abbr>Ge</abbr>
+	<em>锗</em>
+	<data>72.630</data>
+</li>
+<li class="Metalloid p Solid">
+	<b>33</b>
+	<abbr>As</abbr>
+	<em>砷</em>
+	<data>74.922</data>
+</li>
+<li class="Nonmetal p Solid">
+	<b>34</b>
+	<abbr>Se</abbr>
+	<em>硒</em>
+	<data>78.971</data>
+</li>
+<li class="Nonmetal p Liquid">
+	<b>35</b>
+	<abbr>Br</abbr>
+	<em>溴</em>
+	<data>79.904</data>
+</li>
+<li class="Noble p Gas">
+	<b>36</b>
+	<abbr>Kr</abbr>
+	<em>氪</em>
+	<data>83.798</data>
+</li>
+<div class="Period">5</div>
+<li class="Alkali s Solid">
+	<b>37</b>
+	<abbr>Rb</abbr>
+	<em>铷</em>
+	<data>85.468</data>
+</li>
+<li class="Alkaline s Solid">
+	<b>38</b>
+	<abbr>Sr</abbr>
+	<em>锶</em>
+	<data>87.62</data>
+</li>
+<li class="Transition d Solid">
+	<b>39</b>
+	<abbr>Y</abbr>
+	<em>钇</em>
+	<data>88.906</data>
+</li>
+<li class="Transition d Solid">
+	<b>40</b>
+	<abbr>Zr</abbr>
+	<em>锆</em>
+	<data>91.224</data>
+</li>
+<li class="Transition d Solid">
+	<b>41</b>
+	<abbr>Nb</abbr>
+	<em>铌</em>
+	<data>92.906</data>
+</li>
+<li class="Transition d Solid">
+	<b>42</b>
+	<abbr>Mo</abbr>
+	<em>钼</em>
+	<data>95.95</data>
+</li>
+<li class="Transition d Solid">
+	<b>43</b>
+	<abbr>Tc</abbr>
+	<em>锝</em>
+	<data>(98)</data>
+</li>
+<li class="Transition d Solid">
+	<b>44</b>
+	<abbr>Ru</abbr>
+	<em>钌</em>
+	<data>101.07</data>
+</li>
+<li class="Transition d Solid">
+	<b>45</b>
+	<abbr>Rh</abbr>
+	<em>铑</em>
+	<data>102.91</data>
+</li>
+<li class="Transition d Solid">
+	<b>46</b>
+	<abbr>Pd</abbr>
+	<em>钯</em>
+	<data>106.42</data>
+</li>
+<li class="Transition d Solid">
+	<b>47</b>
+	<abbr>Ag</abbr>
+	<em>银</em>
+	<data>107.87</data>
+</li>
+<li class="Transition d Solid">
+	<b>48</b>
+	<abbr>Cd</abbr>
+	<em>镉</em>
+	<data>112.41</data>
+</li>
+<li class="Poor p Solid">
+	<b>49</b>
+	<abbr>In</abbr>
+	<em>铟</em>
+	<data>114.82</data>
+</li>
+<li class="Poor p Solid">
+	<b>50</b>
+	<abbr>Sn</abbr>
+	<em>锡</em>
+	<data>118.71</data>
+</li>
+<li class="Metalloid p Solid">
+	<b>51</b>
+	<abbr>Sb</abbr>
+	<em>锑</em>
+	<data>121.76</data>
+</li>
+<li class="Metalloid p Solid">
+	<b>52</b>
+	<abbr>Te</abbr>
+	<em>碲</em>
+	<data>127.60</data>
+</li>
+<li class="Nonmetal p Solid">
+	<b>53</b>
+	<abbr>I</abbr>
+	<em>碘</em>
+	<data>126.90</data>
+</li>
+<li class="Noble p Gas">
+	<b>54</b>
+	<abbr>Xe</abbr>
+	<em>氙</em>
+	<data>131.29</data>
+</li>
+<div class="Period">6</div>
+<li class="Alkali s Solid">
+	<b>55</b>
+	<abbr>Cs</abbr>
+	<em>铯</em>
+	<data>132.91</data>
+</li>
+<li class="Alkaline s Solid">
+	<b>56</b>
+	<abbr>Ba</abbr>
+	<em>钡</em>
+	<data>137.33</data>
+</li>
+<div class="VerticalInner" id="VerticalInner"></div>
+<div class="Label57to71" tabindex="0">57–71</div>
+<div class="Period Period6">6</div>
+<li class="Lanthanoid f Solid">
+	<b>57</b>
+	<abbr>La</abbr>
+	<em>镧</em>
+	<data>138.91</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>58</b>
+	<abbr>Ce</abbr>
+	<em>铈</em>
+	<data>140.12</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>59</b>
+	<abbr>Pr</abbr>
+	<em>镨</em>
+	<data>140.91</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>60</b>
+	<abbr>Nd</abbr>
+	<em>钕</em>
+	<data>144.24</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>61</b>
+	<abbr>Pm</abbr>
+	<em>钷</em>
+	<data>(145)</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>62</b>
+	<abbr>Sm</abbr>
+	<em>钐</em>
+	<data>150.36</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>63</b>
+	<abbr>Eu</abbr>
+	<em>铕</em>
+	<data>151.96</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>64</b>
+	<abbr>Gd</abbr>
+	<em>钆</em>
+	<data>157.25</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>65</b>
+	<abbr>Tb</abbr>
+	<em>铽</em>
+	<data>158.93</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>66</b>
+	<abbr>Dy</abbr>
+	<em>镝</em>
+	<data>162.50</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>67</b>
+	<abbr>Ho</abbr>
+	<em>钬</em>
+	<data>164.93</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>68</b>
+	<abbr>Er</abbr>
+	<em>铒</em>
+	<data>167.26</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>69</b>
+	<abbr>Tm</abbr>
+	<em>铥</em>
+	<data>168.93</data>
+</li>
+<li class="Lanthanoid f Solid">
+	<b>70</b>
+	<abbr>Yb</abbr>
+	<em>镱</em>
+	<data>173.05</data>
+</li>
+<li class="Lanthanoid d Solid">
+	<b>71</b>
+	<abbr>Lu</abbr>
+	<em>镥</em>
+	<data>174.97</data>
+</li>
+<li class="Transition d Solid">
+	<b>72</b>
+	<abbr>Hf</abbr>
+	<em>铪</em>
+	<data>178.49</data>
+</li>
+<li class="Transition d Solid">
+	<b>73</b>
+	<abbr>Ta</abbr>
+	<em>钽</em>
+	<data>180.95</data>
+</li>
+<li class="Transition d Solid">
+	<b>74</b>
+	<abbr>W</abbr>
+	<em>钨</em>
+	<data>183.84</data>
+</li>
+<li class="Transition d Solid">
+	<b>75</b>
+	<abbr>Re</abbr>
+	<em>铼</em>
+	<data>186.21</data>
+</li>
+<li class="Transition d Solid">
+	<b>76</b>
+	<abbr>Os</abbr>
+	<em>锇</em>
+	<data>190.23</data>
+</li>
+<li class="Transition d Solid">
+	<b>77</b>
+	<abbr>Ir</abbr>
+	<em>铱</em>
+	<data>192.22</data>
+</li>
+<li class="Transition d Solid">
+	<b>78</b>
+	<abbr>Pt</abbr>
+	<em>铂</em>
+	<data>195.08</data>
+</li>
+<li class="Transition d Solid">
+	<b>79</b>
+	<abbr>Au</abbr>
+	<em>金</em>
+	<data>196.97</data>
+</li>
+<li class="Transition d Liquid">
+	<b>80</b>
+	<abbr>Hg</abbr>
+	<em>汞</em>
+	<data>200.59</data>
+</li>
+<li class="Poor p Solid">
+	<b>81</b>
+	<abbr>Tl</abbr>
+	<em>铊</em>
+	<data>204.38</data>
+</li>
+<li class="Poor p Solid">
+	<b>82</b>
+	<abbr>Pb</abbr>
+	<em>铅</em>
+	<data>207.2</data>
+</li>
+<li class="Poor p Solid">
+	<b>83</b>
+	<abbr>Bi</abbr>
+	<em>铋</em>
+	<data>208.98</data>
+</li>
+<li class="Poor p Solid">
+	<b>84</b>
+	<abbr>Po</abbr>
+	<em>钋</em>
+	<data>(209)</data>
+</li>
+<li class="Metalloid p Solid">
+	<b>85</b>
+	<abbr>At</abbr>
+	<em>砹</em>
+	<data>(210)</data>
+</li>
+<li class="Noble p Gas">
+	<b>86</b>
+	<abbr>Rn</abbr>
+	<em>氡</em>
+	<data>(222)</data>
+</li>
+<div class="Period">7</div>
+<li class="Alkali s UnknownState">
+	<b>87</b>
+	<abbr>Fr</abbr>
+	<em>钫</em>
+	<data>(223)</data>
+</li>
+<li class="Alkaline s Solid">
+	<b>88</b>
+	<abbr>Ra</abbr>
+	<em>镭</em>
+	<data>(226)</data>
+</li>
+<div class="Label89to103" tabindex="0">89–103</div>
+<div class="Period Period7">7</div>
+<li class="Actinoid f Solid">
+	<b>89</b>
+	<abbr>Ac</abbr>
+	<em>锕</em>
+	<data>(227)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>90</b>
+	<abbr>Th</abbr>
+	<em>钍</em>
+	<data>232.04</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>91</b>
+	<abbr>Pa</abbr>
+	<em>镤</em>
+	<data>231.04</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>92</b>
+	<abbr>U</abbr>
+	<em>铀</em>
+	<data>238.03</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>93</b>
+	<abbr>Np</abbr>
+	<em>镎</em>
+	<data>(237)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>94</b>
+	<abbr>Pu</abbr>
+	<em>钚</em>
+	<data>(244)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>95</b>
+	<abbr>Am</abbr>
+	<em>镅</em>
+	<data>(243)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>96</b>
+	<abbr>Cm</abbr>
+	<em>锔</em>
+	<data>(247)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>97</b>
+	<abbr>Bk</abbr>
+	<em>锫</em>
+	<data>(247)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>98</b>
+	<abbr>Cf</abbr>
+	<em>锎</em>
+	<data>(251)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>99</b>
+	<abbr>Es</abbr>
+	<em>锿</em>
+	<data>(252)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>100</b>
+	<abbr>Fm</abbr>
+	<em>镄</em>
+	<data>(257)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>101</b>
+	<abbr>Md</abbr>
+	<em>钔</em>
+	<data>(258)</data>
+</li>
+<li class="Actinoid f Solid">
+	<b>102</b>
+	<abbr>No</abbr>
+	<em>锘</em>
+	<data>(259)</data>
+</li>
+<li class="Actinoid d Solid">
+	<b>103</b>
+	<abbr>Lr</abbr>
+	<em>铹</em>
+	<data>(266)</data>
+</li>
+<li class="Transition d UnknownState">
+	<b>104</b>
+	<abbr>Rf</abbr>
+	<em>𬬻</em>
+	<data>(267)</data>
+</li>
+<li class="Transition d UnknownState">
+	<b>105</b>
+	<abbr>Db</abbr>
+	<em>𬭊</em>
+	<data>(268)</data>
+</li>
+<li class="Transition d UnknownState">
+	<b>106</b>
+	<abbr>Sg</abbr>
+	<em>𬭳</em>
+	<data>(269)</data>
+</li>
+<li class="Transition d UnknownState">
+	<b>107</b>
+	<abbr>Bh</abbr>
+	<em>𬭛</em>
+	<data>(270)</data>
+</li>
+<li class="Transition d UnknownState">
+	<b>108</b>
+	<abbr>Hs</abbr>
+	<em>𬭶</em>
+	<data>(277)</data>
+</li>
+<li class="Unknown d UnknownState">
+	<b>109</b>
+	<abbr>Mt</abbr>
+	<em>鿏</em>
+	<data>(278)</data>
+</li>
+<li class="Unknown d UnknownState">
+	<b>110</b>
+	<abbr>Ds</abbr>
+	<em>𫟼</em>
+	<data>(281)</data>
+</li>
+<li class="Unknown d UnknownState">
+	<b>111</b>
+	<abbr>Rg</abbr>
+	<em>𬬭</em>
+	<data>(282)</data>
+</li>
+<li class="Unknown d UnknownState">
+	<b>112</b>
+	<abbr>Cn</abbr>
+	<em>鿔</em>
+	<data>(285)</data>
+</li>
+<li class="Unknown p UnknownState">
+	<b>113</b>
+	<abbr>Nh</abbr>
+	<em>鿭</em>
+	<data>(286)</data>
+</li>
+<li class="Unknown p UnknownState">
+	<b>114</b>
+	<abbr>Fl</abbr>
+	<em>𫓧</em>
+	<data>(289)</data>
+</li>
+<li class="Unknown p UnknownState">
+	<b>115</b>
+	<abbr>Mc</abbr>
+	<em>镆</em>
+	<data>(290)</data>
+</li>
+<li class="Unknown p UnknownState">
+	<b>116</b>
+	<abbr>Lv</abbr>
+	<em>𫟷</em>
+	<data>(293)</data>
+</li>
+<li class="Unknown p UnknownState">
+	<b>117</b>
+	<abbr>Ts</abbr>
+	<em>鿬</em>
+	<data>(294)</data>
+</li>
+<li class="Unknown p UnknownState">
+	<b>118</b>
+	<abbr>Og</abbr>
+	<em>鿫</em>
+	<data>(294)</data>
+</li>
+<div class="PosterLogo"></div>
+<div class="Parentheses" id="Parentheses">这些原理没有一致稳定的同位素,大量的同位素最长的半生会在圆括号里</div>
+</ol>
+</article>
+</main>
+
+<footer>
+	<dl>
+  <dt>View</dt>
+  <dd><input type="checkbox" id="WideFooter" name="Wide" class="Button"><label for="WideFooter">广大</label>
+  </dd><dd><input type="checkbox" id="DarkButtonFooter" name="Dark" class="Button"><label for="DarkButtonFooter">Dark</label>
+ </dd></dl>
+ <dl>
+  <dt>网站信息</dt>
+  <dd><a href="https://ptable.com/?lang=zh">原网站</a></dd>
+  <dd><a href="https://taozhiyu.gitee.io">离线：涛之雨</a></dd>
+  <dd><a href="https://www.52pojie.cn/home.php?mod=space&uid=879080" title="@吾爱破解（需要账号）">联系我</a></dd>
+ </dl>
+ <dl style="text-align: right;">
+  <dt>相关信息</dt>
+  <dd><a href="./print/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+	<path fill="currentColor" d="M416.155 164.483H95.845c-38.895 0-68.638 29.743-68.638 68.638v137.275h91.517v91.518h274.552v-91.518h91.517V233.121c0-38.895-29.743-68.638-68.638-68.638zm-68.638 251.672H164.483V301.759h183.034v114.396zM416.155 256c-13.728 0-22.879-9.152-22.879-22.879 0-13.728 9.151-22.88 22.879-22.88 13.728 0 22.879 9.152 22.879 22.88 0 13.727-9.151 22.879-22.879 22.879zM393.276 50.086H118.724v91.518h274.552V50.086z"/>
+</svg>
+ 打印 PDF</a></dd>
+  <dd><a href="./image/元素周期表.html" title="元素周期表(SVG图片)">元素周期表</a></dd>
+  <dd><a href="https://www.bilibili.com/video/BV1dU4y1a7LD/" title="元素周期表（转自YouTube，手动翻译字幕）">演示视频</a></dd>
+  <!-- <dd><form name="language" method="get" action="."><select name="lang" id="Lang"><option value="af">Afrikaans</option><option value="ar">العربية</option><option value="bg">Български</option><option value="bn">বাংলা</option><option value="ca">Català</option><option value="cs">Čeština</option><option value="cy">Cymraeg</option><option value="da">Dansk</option><option value="de">Deutsch</option><option value="el">Ελληνικά</option><option value="en">English</option><option value="eo">Esperanto</option><option value="es">Español</option><option value="et">Eesti</option><option value="fa">فارسی</option><option value="fi">Suomi</option><option value="fr">Français</option><option value="he">עברית</option><option value="hi">हिन्दी</option><option value="hr">Hrvatski</option><option value="hu">Magyar</option><option value="id">Bahasa</option><option value="is">Íslenska</option><option value="it">Italiano</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="la">Latina</option><option value="lt">Lietuvių</option><option value="lv">Latviešu</option><option value="nl">Nederlands</option><option value="no">Norsk</option><option value="pl">Polski</option><option value="pt">Português</option><option value="ro">Română</option><option value="ru">Русский</option><option value="sk">Slovenčina</option><option value="sl">Slovenščina</option><option value="sr">Српски</option><option value="sv">Svenska</option><option value="sw">Kiswahili</option><option value="th">ไทย</option><option value="tr">Türkçe</option><option value="uk">Українська</option><option value="vi">Tiếng Việt</option><option value="zh" selected="selected">中文 (简)</option><option value="zh-tw">中文 (繁)</option></select> -->
+  <!-- <noscript><input type="submit" value="▶"></noscript></form ></dd>-->
+ </dl>
+ <!-- <dl>
+  <dt>Engage</dt>
+  <dd>
+   <a href="https://chem.chat/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#7289da">
+	<rect width="512" height="512" rx="15%"/>
+	<path d="m346 392-21-25c41-11 57-39 57-39-52 49-194 51-249 0 0 0 14 26 56 39l-23 25c-70-1-97-48-97-48 0-104 46-187 46-187 47-33 90-33 90-33l3 4c-58 16-83 42-83 42 68-46 208-42 263 0 1-1-33-28-86-42l5-4s43 0 90 33c0 0 46 83 46 187 0 0-27 47-97 48z" fill="#fff"/>
+	<ellipse cx="196" cy="279" rx="33" ry="35"/>
+	<ellipse cx="312" cy="279" rx="33" ry="35"/>
+</svg>
+</a>
+   <a href="https://twitter.com/ptable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+	<rect width="512" height="512" rx="15%" fill="#1da1f2"/>
+	<path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/>
+</svg>
+
+</a>
+   <a href="https://instagram.com/ptable"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+	<rect width="512" height="512" rx="15%" id="b"/>
+	<use fill="url(#a)" xlink:href="#b"/>
+	<use fill="url(#c)" xlink:href="#b"/>
+	<radialGradient id="a" cx=".4" cy="1" r="1">
+		<stop offset=".1" stop-color="#fd5"/>
+		<stop offset=".5" stop-color="#ff543e"/>
+		<stop offset="1" stop-color="#c837ab"/>
+	</radialGradient>
+	<linearGradient id="c" x2=".2" y2="1">
+		<stop offset=".1" stop-color="#3771c8"/>
+		<stop offset=".5" stop-color="#60f" stop-opacity="0"/>
+	</linearGradient>
+	<g fill="none" stroke="#fff" stroke-width="30">
+		<rect width="308" height="308" x="102" y="102" rx="81"/>
+		<circle cx="256" cy="256" r="72"/>
+		<circle cx="347" cy="165" r="6"/>
+	</g>
+</svg>
+
+</a>
+  </dd>
+  <dd><a id="Share" href="/">Share</a></dd>
+  <dd><a href="/contact/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+	<rect width="512" height="512" rx="15%" fill="teal"/>
+	<rect width="356" height="256" x="78" y="128" fill="#fff" rx="8%"/><path fill="none" stroke="teal" stroke-width="20" d="M434 128L269 292c-7 8-19 8-26 0L78 128m0 256l129-128m227 128L305 256"/>
+</svg>
+Contact</a></dd>
+ </dl> -->
+ <addr>Ptable® <span>是</span> <a href="https://dayah.com/" target="_blank" rel="noopener">Michael Dayah</a>注册的商标. <span>于 2020年11月20日 更新。<br>（本页面由涛之雨于 2021年4月1日 添加部分汉化、添加部分字体、离线、修改等）</span></addr>
+</footer>
+
+<template id="IsotopeSymbol">
+ <abbr><span><sup></sup><sub></sub></span></abbr>
+</template>
+
+<template id="CompoundArrows"><div>
+ <button class="Up"></button> <!-- no indent to avoid creating whitespace nodes -->
+ <button class="Down"></button>
+</div></template>
+<script type="text/javascript">
+	if(window.location.protocol ==='file:'){
+  		document.body.innerHTML='<h1 style="color:RGB(var(--text));display:block;">请打开服务器，通过<a href="http://localhost/Ptable">loalhost/ptable</a>访问！<BR> 如果不会操作，请访问<a href="https://ptable.com/?lang=zh">https://ptable.com/?lang=zh</a>原网站</h1>'
+  	}</script>
+
+
+</body>
+</html>
