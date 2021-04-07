@@ -6,6 +6,12 @@
 	"lang": "zh",
 	"icons": [
 		{
+		      "src": "../icon/pt-square-128.ico",
+		      "sizes": "64x64 32x32 24x24 16x16 128x128",
+		      "type": "image/x-icon",
+			"purpose": "any maskable"
+	    },
+	    {
 			"src": "../icon/pt-square-192.png",
 			"type": "image/png",
 			"sizes": "192x192",
@@ -18,7 +24,7 @@
 			"purpose": "any maskable"
 		}
 	],
-	"start_url": "/?lang=zh",
+	"start_url": ".",
 	"scope": "/",
 	"display": "standalone",
 	"background_color": "white",

@@ -519,7 +519,7 @@ li.Active.Loading			{ animation: element-loading 0.5s linear infinite alternate;
 canvas					{ grid-row-end: span 6; width: 100%; height: 100%; cursor: move; touch-action: pan-y pinch-zoom; }
 
 [value="expandedconfig"] + li > output > b					{ font-weight: normal; color: var(--gas); text-decoration: overline; cursor: pointer; }
-[value="expandedconfig"] + li > output > b:hover::before	{ content: "Exception to Madelung energy ordering rule"; position: absolute; background-color: var(--blocks); padding: var(--margin); margin-top: calc(1em + var(--margin)); margin-inline-start: -11em; width: 11em; white-space: initial; direction: initial; cursor: initial; }
+[value="expandedconfig"] + li > output > b:hover::before	{ content: "马德龙能量排序规则的例外情况"; position: absolute; background-color: var(--blocks); padding: var(--margin); margin-top: calc(1em + var(--margin)); margin-inline-start: -14em; width: 14em; white-space: initial; direction: initial; cursor: initial; }
 
 /*** Isotopes ***/
 .Tilt					{ transform: perspective(50em) rotateX(-3deg) rotateY(3deg); transform-origin: top left; }

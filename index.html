@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-CN" data-iso="zh" dir="ltr" class="Property" data-wide="0">
-<!-- toggled classes: Wide, Sidebar, Collapse, [Tab], Dark, SmoothResize, NoTransitions -->
+
  <head>
   <title>元素周期表 - Ptable</title>
   <meta charset="utf-8">
   <script>
- 
+ function reportError(e){console.log(e)}
   const dark_os_theme = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const theme_set = /Theme=/.test(document.cookie);
   const dark_set = /Theme=Dark/.test(document.cookie);
@@ -34,10 +34,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="icon" href="./icon/pt-square-192.png">
   <link rel="apple-touch-icon" href="./icon/pt-square-192.png">
-
-  <link rel="canonical" href="https://ptable.com/?lang=zh">
+  <link rel="canonical" href="https://taozhiyu.vercel.app">
+  <link rel="canonical" href="https://taozhiyu.github.io">
   <link rel="manifest" href="./manifest/ptable.zh.webmanifest">
-<link rel="stylesheet" type="text/css" href="css/Font.css">
+<link rel="stylesheet" type="text/css" href="./css/Font.css">
   <style type="text/css">
 :root {
 	--solid:			#000;
@@ -173,6 +173,7 @@ html, body			{ font-family: system-ui, -apple-system, "Segoe UI", sans-serif; ba
 body				{ margin: 0; }
 
 /*** Anchors ***/
+footer {user-select: none;}
 footer a,
 .KeyRegion a,
 .Group > a			{ text-decoration: inherit;  }/*width: 4em;*/
@@ -307,6 +308,7 @@ ul > li > select			{ margin-inline-end: calc(-1 * var(--margin)); font: inherit;
 ul > li > label > select	{ color: inherit; font: inherit; border: none; background-color: var(--body-bg); /* MAYBE */ }
 ul > li > a					{ text-align: end; }
 ul > li > output			{ text-align: end; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+ul > li.HideStart			{ overflow: hidden; }
 ul > li.HideStart > output	{ direction: rtl; text-align: left; }
 ul > li:hover > output		{ direction: unset; white-space: initial; overflow: initial; text-align: end; }
 ul > li > a ~ a				{ flex-basis: 100%; }
@@ -602,7 +604,9 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 	.Sidebar					{ --aspect-ratio: min(1vw, 1.8vh + (var(--groups) - 18) * 0.1vh); }		/* reach 3.1vh at group 32 */
 	.Reset						{ --aspect-ratio: min(1vw, 1.48vh + (var(--groups) - 18) * 0.09vh); }	/* reach 2.75vh at group 32 */
 }
-#Ptable > li > em ,#CloseUp > output > em{
+#Ptable > li > em ,
+#CloseUp > output > em,
+#AsideWriteup > a{
 	font-family:"taozhiyuFont"
 }
 @media (max-width: 768px) { /* Also in --min */
@@ -614,10 +618,11 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 
 @media (max-width: 550px), (display-mode: standalone) {
 	.MenuButton + label		{ display: flex; padding-inline-start: var(--margin); }
-	footer					{ display: flex; flex-direction: column; visibility: hidden; transform: translateX(-100%); z-index: 2; position: absolute; top: calc(2 * var(--2margin) + var(--tab-height)); bottom: 0; font-size: 3vh; margin: 0; padding: 3vh; background-color: inherit; box-shadow: 0 19px 38px var(--darkshadow), 0 15px 12px var(--lightshadow); }
-	addr					{ flex-basis: unset; }
-	addr > span				{ display: none; }
+	footer					{ display: flex; flex-direction: column; visibility: hidden; transform: translateX(-100%); z-index: 2; position: absolute; top: calc(2 * var(--2margin) + var(--tab-height)); bottom: 0; font-size: 3vh; margin: 0; padding: 3vh; background-color: inherit; box-shadow: 0 19px 38px var(--darkshadow), 0 15px 12px var(--lightshadow); width: -webkit-fill-available;}
+	addr					{ flex-basis: unset; width: fit-content;}
+	/*addr > span				{ display: none; }*/
 	footer.Menu				{ transform: translateX(0); visibility: visible; }
+	footer > dl:nth-child(3){text-align: unset!important;}
 }
 
 @media (max-width: 550px) {
@@ -691,51 +696,53 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 	ul > input:checked + li	{ transition: none !important; }
 	.SearchActive article ol,
 	ol.Tilt					{ transform: none; }
-}
     ::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
+        border-radius: 0px!important;
         background-color: var(--scrool-bar-color);
     }
 
     ::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
+        width: 0px!important;
+        height: 0px!important;
         background-color: var(--scrool-bar-color);
     }
 
     ::-webkit-scrollbar-thumb {
-        border-radius: 10px;
+        border-radius: 0px!important;
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
         background-color: var(--scrool-bar-thumb-color);
     }
-/* font-variant-numeric: tabular-nums; MAYBE */
+}
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+        background-color: var(--scrool-bar-color);
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        background-color: var(--scrool-bar-color);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 6px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+        background-color: var(--scrool-bar-thumb-color);
+    }
   </style>
   <link rel="stylesheet" href="./css/interactive-b9dc29f.css" media="print" onload="this.media='all'; this.onload = null;">
-
-  <!-- <script nomodule>window.location.replace("https://old.ptable.com/");</script> -->
-  <!-- <script type="module">if (!("reversed" in document.createElement("ol"))) window.location.replace("https://old.ptable.com/");</script> -->
-
-  <!-- <script defer src="https://d2wy8f7a9ursnm.cloudfront.net/v7/bugsnag.min.js"></script> -->
-  <script defer src="data:text/javascript,
-  if (window.Bugsnag) {
-  	window.Bugsnag.start({apiKey: '89a7744f0a74c197fd23f560afed1170', releaseStage: 'production', appVersion: 'new-e8a7978', metadata: { lang: 'zh' } });
-  }
-  function reportError(e) {
-  	if (window.Bugsnag) Bugsnag.notify(e);
-  	else console.log(e);
-  }"></script>
 
   <script type="module" src="./js/required-3e873030.js"></script>
   <link rel="modulepreload" href="./js/extra-59fbde3d.js">
  </head>
  <body>
- <!-- toggled classes: Overlay, SearchActive -->
 
 <h1>元素周期表</h1>
 <header>
  <input type="checkbox" id="Menu" name="Menu" class="Button Flat MenuButton"><label for="Menu"><svg viewBox="0 0 100 100">
- <title>Menu</title>
+ <title>目录</title>
  <style>
   .MenuButton + label rect						{ transform-origin: center; transition: transform 0.2s linear; stroke: none; }
   .MenuButton:checked + label rect:first-child	{ transform: rotate(-39deg) scaleX(0.75) translateY(3%); }
@@ -749,7 +756,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </svg>
 </label>
  <input type="radio" id="ResetTab" name="Tab" class="Logo"><label for="ResetTab"><a href="#" alt="Ptable">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 121.1">
+<svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 280 121.1">
  <defs>
   <style>
    .Square	{ fill: url(#lgrad); }
@@ -775,7 +782,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </svg>
 
 
- 	<!-- <img src="./icon/ptable-logo.svg" alt="Ptable"> -->
+ 	
  </a></label>
  <nav>
   <input type="radio" id="PropertyTab" name="Tab" checked><label for="PropertyTab"><svg viewBox="0 0 100 100">
@@ -840,10 +847,10 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
   <polygon points="0 0, 1 0, 1 1, 2 1, 2 5, 10 5, 10 3, 16 3, 16 1, 20 1, 20 0, 21 0, 21 7, 0 7" stroke="none" />
  </g>
 </svg>
-<a>广大</a></label>
+<a>宽视图</a></label>
 
  <input type="radio" id="TopbarToggle" name="Layout" class="Button Raised Left Toggle" checked><label for="TopbarToggle"><svg viewBox="0 0 100 100">
- <title>Top bar</title>
+ <title>顶部显示</title>
  <g>
   <rect x="10" y="10" width="80" height="80" rx="8" fill="none" />
   <line x1="37" x2="37" y1="10" y2="37" />
@@ -852,7 +859,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </svg>
 </label>
  <input type="radio" id="SidebarToggle" name="Layout" class="Button Raised Right Toggle"><label for="SidebarToggle"><svg viewBox="0 0 100 100">
- <title>Side bar</title>
+ <title>左侧显示</title>
  <g>
   <rect x="10" y="10" width="80" height="80" rx="8" fill="none" />
   <line x1="37" x2="37" y1="10" y2="90" />
@@ -862,7 +869,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </label>
 
  <input type="checkbox" id="DarkButton" name="Dark" class="Button Raised"><label for="DarkButton"><svg viewBox="-50 -50 100 100">
- <title>Dark</title>
+ <title>深色模式</title>
  <defs>
   <mask id="Moon">
    <rect x="-50" y="-50" width="100" height="100" fill="white" />
@@ -876,7 +883,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </label>
 
  <input type="checkbox" id="SearchButton" class="Button Flat" name="Search"><label for="SearchButton"><svg viewBox="-50 -50 100 100" class="Magnify">
- <title>Search</title>
+ <title>搜索</title>
  <style>
   .Magnify *	{ transition: all 0.6s cubic-bezier(0.2,1,0.3,1); }
   :checked + label > .Magnify .Circle	{ cx: 0; cy: 0; ry: 0.1; rx: 40; transform: rotate(-45deg); }
@@ -890,17 +897,17 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </label>
 </header>
 
-<!-- <section id="Notice" class="Notice"> -->
- <!-- <ins class="adsbygoogle" data-ad-client="ca-pub-1899956715581914" data-ad-slot="1123424162" data-ad-format="horizontal" data-full-width-responsive="true"></ins> -->
-<!-- <ins class="adsbygoogle" id="div-gpt-ad-Top"></ins> -->
- <!-- <blockquote id="NoticeText"> -->
- <!-- <noscript>Enable JavaScript for a <a href="https://www.youtube.com/watch?v=EX56SP-lTHc">plethora of interactivity</a> including property trend visualization, thousands of isotopes, mixing of compound, and 3D orbital diagrams.</noscript> -->
- <!-- Don't like ads? No problem! Ptable will always be free for everyone. Find yourself here daily? Consider either unblocking the single ad banner, <a href="https://www.patreon.com/bePatron?u=6102731">donating $1 a month</a> (<a href="https://www.patreon.com/oauth2/authorize?response_type=code&client_id=sN8bpQO5TsIYTlhXxjS3-ZLYdtqZOHgjiPC928SlNyQLBnafLFEfj1rmMDjcnO3A&redirect_uri=https%3A%2F%2Fptable.com%2Fdonate%2F">log in after donating</a>), or <a href="/poster/">buying a poster or wallet card</a>, order number <form style="display: inline;" method="get" action="/donate/"><input type="text" name="order" size="5"> <input type="submit" value="Hide ads"></form></blockquote> -->
- <!-- <button></button> -->
-<!-- </section> -->
+
+ 
+
+ 
+ 
+ 
+ 
+
 
 <main class="AlphaEmission ProtonEmission TwoProtonEmission NeutronEmission TwoNeutronEmission SpontaneousFission BetaDecay DoubleBetaDecay BetaPlusDecay DoubleBetaPlusDecay ElectronCapture Stable">
-<!-- toggled classes: [DecayMode WIPED] -->
+
 
 <aside class="Alkali Alkaline Lanthanoid Actinoid Transition Poor Metalloid Nonmetal Noble Unknown">
  <figure id="CloseUp">
@@ -930,7 +937,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
  <input type="radio" name="Property" id="t_name" value="name" data-schemevaluesOFF="Photos=#A00,Videos=#AA0" data-help="选择一个元素以从维基镜像中打开其内容。">
  <li>
   <label for="t_name"><span>名称</span></label>
-  <output id="AsideWriteup"><a href="http://zh.wiki.sxisa.org/wiki/"></a></output>
+  <output id="AsideWriteup"><a href="https://zh.wiki.sxisa.org/wiki/"></a></output>
   <select><option value="Wikipedia">维基镜像</option></select> </li>
 
  <input type="radio" name="Property" id="t_state" value="state" data-schemevalues="Solid=var(--solid),Liquid=var(--liquid),Gas=var(--gas),UnknownState=var(--unknown)" data-help="选择一个温度以查看该温度和1个大气压下所有元素的物质状态。">
@@ -1040,13 +1047,13 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 
  <input type="radio" name="Electrons" id="t_electronstring" value="electronstring" data-help="电子构型是原子在原子轨道中的电子分布。">
  <li>
-  <label for="t_electronstring"><span>分子空间结构</span></label>
+  <label for="t_electronstring"><span>构型</span></label>
   <output></output>
  </li>
 
- <input type="radio" name="Electrons" id="t_expandedconfig" value="expandedconfig" data-help="电子构型是原子在原子轨道中的电子分布。">
+ <input type="radio" name="Electrons" id="t_expandedconfig" value="expandedconfig" data-help="电子排布是原子在原子轨道中的电子分布。">
  <li class="HideStart">
-  <label for="t_expandedconfig"><span>延伸型价电子层</span></label>
+  <label for="t_expandedconfig"><span>电子排布式</span></label>
   <output></output>
  </li>
 
@@ -1065,7 +1072,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </ul>
 
 <ul id="Isotope" class="Isotopes" data-schemeunknown="var(--nodata)">
- <input type="radio" name="isotopes" id="t_isotopes" value="isotopes" data-schemevalues="MATCHES=" checked data-help="代替重量的数字表示每种元素的已知同位素的总数。">
+ <input type="radio" name="isotopes" id="t_isotopes" value="isotopes" data-schemevalues="MATCHES=" checked data-help="“质量”所在位置的数字表示每种元素的已知同位素的总数。">
  <li>
   <label for="t_isotopes"><span>数量</span></label>
   <output></output>
@@ -1085,7 +1092,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
   <output></output>
   <select class="AMU"><option value="u">u</option></select> </li>
 
- <input type="radio" name="isotopes" id="t_excess" value="excess" data-schemestart="var(--blocks)" data-schemeend="var(--electrons-end)" data-schemescale="lin" disabled data-help="质量过剩是同位素的实际质量与原子质量单位的质量数之差。">
+ <input type="radio" name="isotopes" id="t_excess" value="excess" data-schemestart="var(--blocks)" data-schemeend="var(--electrons-end)" data-schemescale="lin" disabled data-help="“质量”所在位置的数字是同位素的实际质量与原子质量单位的质量数之差。">
  <li>
   <label for="t_excess"><span>质量欠缺</span></label>
   <output></output>
@@ -1141,7 +1148,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 </ul>
 
 <ul id="Compound" class="Compounds" data-schemeunknown="var(--blocks)">
- <input type="radio" name="compounds" value="compounds" data-schemevalues="MATCHES=" checked data-help="代替权重的数字表示通过将该元素添加到化合物搜索中而形成的化合物数量。">
+ <input type="radio" name="compounds" value="compounds" data-schemevalues="MATCHES=" checked data-help="“质量”所在位置的数字表示通过将该元素添加到化合物搜索中而形成的化合物数量。">
  <li>
   <label><span></span></label>
   <output></output>
@@ -1150,14 +1157,14 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 <ul id="CompoundResults" class="CompoundResults" data-placeholder="所选元素不能形成任何化合物">
 <ul>
 
- </section> <!-- DataRegion -->
+ </section> 
 </aside>
 
-<article id="PropertyClass" class="series"> <!-- Nested so flex-direction can treat this as a group when flipping from top to sidebar. -->
-<!-- toggled classes: [property WIPED] -->
+<article id="PropertyClass" class="series"> 
+
 
  <section id="SliderTemp" class="Slider SliderTemp">
-  <label for="TempRange" title="Reset to STP">温度</label>
+  <label for="TempRange" title="重置为STP">温度</label>
   <input type="button" id="TempSub" value="－" data-skip="-1">
   <input type="range" data-unit="C" id="TempRange" class="TempRange" min="-273" max="5727" value="0">
   <input type="button" id="TempAdd" value="＋" data-skip="+1">
@@ -1178,7 +1185,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
   </div>
  </section>
 
- <div class="SearchAnchor"> <!-- Nested to provide origin or slider won't push search down. -->
+ <div class="SearchAnchor"> 
   <section id="SearchConsole" class="SearchConsole">
    <input type="search" id="SearchBox" class="SearchBox" data-placeholderatomic="79" data-placeholderproperty="<20, =7, 3-10">
    <ul id="SearchType">
@@ -1192,7 +1199,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
  </div>
 
 <ol id="Ptable" class="Hover Alkali Alkaline Lanthanoid Actinoid Transition Poor Metalloid Nonmetal Noble Unknown s p d f" data-classes="Alkali Alkaline Lanthanoid Actinoid Transition Poor Metalloid Nonmetal Noble Unknown s p d f" dir="ltr">
-<!-- toggled classes: Hover, Fanned, Tilt, Delay, Shine, [Series], [Block] -->
+
 <div class="Group"></div>
 <div class="Group">1</div>
 <div class="Group">2</div>
@@ -1208,9 +1215,9 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 <div class="Group">12</div>
 <div class="Group">13</div>
 <div class="Group">14</div>
-<div class="Group">15<a href="http://zh.wiki.sxisa.org/wiki/%E6%B0%AE%E6%97%8F%E5%85%83%E7%B4%A0">氮族元素</a></div>
-<div class="Group">16<a href="http://zh.wiki.sxisa.org/wiki/%E6%B0%A7%E6%97%8F%E5%85%83%E7%B4%A0">氧族元素</a></div>
-<div class="Group">17<a href="http://zh.wiki.sxisa.org/wiki/%E5%8D%A4%E7%B4%A0">卤素</a></div>
+<div class="Group">15<a href="https://zh.wiki.sxisa.org/wiki/%E6%B0%AE%E6%97%8F%E5%85%83%E7%B4%A0">氮族元素</a></div>
+<div class="Group">16<a href="https://zh.wiki.sxisa.org/wiki/%E6%B0%A7%E6%97%8F%E5%85%83%E7%B4%A0">氧族元素</a></div>
+<div class="Group">17<a href="https://zh.wiki.sxisa.org/wiki/%E5%8D%A4%E7%B4%A0">卤素</a></div>
 <div class="Group">18</div>
 <section id="KeyRegion" class="KeyRegion" dir="ltr">
 <div id="SeriesState" class="SeriesState">
@@ -1233,17 +1240,17 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
   </div>
  </dl>
  <dl id="Series" class="Series" dir="ltr">
-  <dt class="Metals" data-classes="Alkali Alkaline Lanthanoid Actinoid Transition Poor"><a href="http://zh.wiki.sxisa.org/wiki/%E9%87%91%E5%B1%9E">金属</a></dt>
-  <dd class="Alkali"><a href="http://zh.wiki.sxisa.org/wiki/%E7%A2%B1%E9%87%91%E5%B1%9E">碱金属</a></dd>
-  <dd class="Alkaline"><a href="http://zh.wiki.sxisa.org/wiki/%E7%A2%B1%E5%9C%9F%E9%87%91%E5%B1%9E">碱土金属</a></dd>
-  <dd class="Lanthanoid"><a href="http://zh.wiki.sxisa.org/wiki/%E9%95%A7%E7%B3%BB%E5%85%83%E7%B4%A0">镧系元素</a></dd>
-  <dd class="Actinoid"><a href="http://zh.wiki.sxisa.org/wiki/%E9%94%95%E7%B3%BB%E5%85%83%E7%B4%A0">锕系元素</a></dd>
-  <dd class="Transition"><a href="http://zh.wiki.sxisa.org/wiki/%E8%BF%87%E6%B8%A1%E9%87%91%E5%B1%9E">过渡金属</a></dd>
-  <dd class="Poor"><a href="http://zh.wiki.sxisa.org/wiki/贫金属">贫金属</a></dd>
-  <dt class="Metalloid"><a href="http://zh.wiki.sxisa.org/wiki/%E7%B1%BB%E9%87%91%E5%B1%9E">类金属</a></dt>
-  <dt class="Nonmetals" data-classes="Nonmetal Noble"><a href="http://zh.wiki.sxisa.org/wiki/%E9%9D%9E%E9%87%91%E5%B1%9E%E5%85%83%E7%B4%A0">非金属元素</a></dt>
-  <dd class="Nonmetal"><a href="http://zh.wiki.sxisa.org/wiki/%E9%9D%9E%E9%87%91%E5%B1%9E">非金属</a></dd>
-  <dd class="Noble"><a href="http://zh.wiki.sxisa.org/wiki/%E7%A8%80%E6%9C%89%E6%B0%94%E4%BD%93">稀有气体</a></dd>
+  <dt class="Metals" data-classes="Alkali Alkaline Lanthanoid Actinoid Transition Poor"><a href="https://zh.wiki.sxisa.org/wiki/%E9%87%91%E5%B1%9E">金属</a></dt>
+  <dd class="Alkali"><a href="https://zh.wiki.sxisa.org/wiki/%E7%A2%B1%E9%87%91%E5%B1%9E">碱金属</a></dd>
+  <dd class="Alkaline"><a href="https://zh.wiki.sxisa.org/wiki/%E7%A2%B1%E5%9C%9F%E9%87%91%E5%B1%9E">碱土金属</a></dd>
+  <dd class="Lanthanoid"><a href="https://zh.wiki.sxisa.org/wiki/%E9%95%A7%E7%B3%BB%E5%85%83%E7%B4%A0">镧系元素</a></dd>
+  <dd class="Actinoid"><a href="https://zh.wiki.sxisa.org/wiki/%E9%94%95%E7%B3%BB%E5%85%83%E7%B4%A0">锕系元素</a></dd>
+  <dd class="Transition"><a href="https://zh.wiki.sxisa.org/wiki/%E8%BF%87%E6%B8%A1%E9%87%91%E5%B1%9E">过渡金属</a></dd>
+  <dd class="Poor"><a href="https://zh.wiki.sxisa.org/wiki/贫金属">贫金属</a></dd>
+  <dt class="Metalloid"><a href="https://zh.wiki.sxisa.org/wiki/%E7%B1%BB%E9%87%91%E5%B1%9E">类金属</a></dt>
+  <dt class="Nonmetals" data-classes="Nonmetal Noble"><a href="https://zh.wiki.sxisa.org/wiki/%E9%9D%9E%E9%87%91%E5%B1%9E%E5%85%83%E7%B4%A0">非金属元素</a></dt>
+  <dd class="Nonmetal"><a href="https://zh.wiki.sxisa.org/wiki/%E9%9D%9E%E9%87%91%E5%B1%9E">非金属</a></dd>
+  <dd class="Noble"><a href="https://zh.wiki.sxisa.org/wiki/%E7%A8%80%E6%9C%89%E6%B0%94%E4%BD%93">稀有气体</a></dd>
  </dl>
 </div>
 
@@ -1266,15 +1273,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
   </div>
  </dl>
 
-<!--
- <dl>
-  <legend>Scheme</legend>
-  <ul>
-   <input id="SchemeReset" type="button" value="Reset">
-   <input type="button" value="Save">
-  </ul>
- </dl>
--->
+
 
  <dl>
   <legend>关系</legend>
@@ -1284,10 +1283,7 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 
    <input type="radio" name="SchemeScale" id="Logarithmic" value="log">
    <li><label for="Logarithmic">对数关系</label></li>
-<!--
-   <input type="radio" name="SchemeScale" id="Exponential" value="exp">
-   <li><label for="Exponential">Exponential</label></li>
--->
+
   </ul>
  </dl>
 </div>
@@ -1348,46 +1344,46 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
  <dl id="DecayModes" class="DecayModes StateKey">
   <div>
    <dt class="AlphaEmission">α</dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/%CE%91%E8%A1%B0%E5%8F%98">Α衰变</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/%CE%91%E8%A1%B0%E5%8F%98">Α衰变</a></dd>
   </div>
   <div>
    <dt class="TwoProtonEmission ProtonEmission">p</dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E8%B4%A8%E5%AD%90%E5%8F%91%E5%B0%84">质子发射</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/%E8%B4%A8%E5%AD%90%E5%8F%91%E5%B0%84">质子发射</a></dd>
   </div>
   <div>
    <dt class="TwoNeutronEmission NeutronEmission">n</dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E4%B8%AD%E5%AD%90%E7%99%BC%E5%B0%84">中子发射</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/%E4%B8%AD%E5%AD%90%E7%99%BC%E5%B0%84">中子发射</a></dd>
   </div>
   <div>
    <dt class="SpontaneousFission">SF</dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E8%87%AA%E7%99%BC%E8%A3%82%E8%AE%8A">自发裂变</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/%E8%87%AA%E7%99%BC%E8%A3%82%E8%AE%8A">自发裂变</a></dd>
   </div>
   <div>
    <dt class="DoubleBetaDecay BetaDecay">ß⁻</dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/%CE%92%E8%A1%B0%E5%8F%98">Β衰变</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/%CE%92%E8%A1%B0%E5%8F%98">Β衰变</a></dd>
   </div>
   <div>
    <dt class="DoubleBetaPlusDecay BetaPlusDecay">ß⁺</dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E6%AD%A3%E7%94%B5%E5%AD%90%E5%8F%91%E5%B0%84">正电子发射</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/%E6%AD%A3%E7%94%B5%E5%AD%90%E5%8F%91%E5%B0%84">正电子发射</a></dd>
   </div>
   <div>
    <dt class="ElectronCapture">ϵ</dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/电子俘获">电子俘获</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/电子俘获">电子俘获</a></dd>
   </div>
   <div>
    <dt class="Stable"> </dt>
-   <dd><a href="http://zh.wiki.sxisa.org/wiki/%E7%A8%B3%E5%AE%9A%E5%90%8C%E4%BD%8D%E7%B4%A0">稳定同位素</a></dd>
+   <dd><a href="https://zh.wiki.sxisa.org/wiki/%E7%A8%B3%E5%AE%9A%E5%90%8C%E4%BD%8D%E7%B4%A0">稳定同位素</a></dd>
   </div>
   <button id="RemoveIsotopes">✕</button>
  </dl>
-<!-- </div>-->
+
 </div>
 
 <div class="CompoundKey">
  <div id="CompoundDragTarget" class="CompoundDragTarget" data-placeholder="将元素拖动到内部以创建化合物" data-placeholder-click="选择元素以创建化合物"></div>
 </div>
 
-</section> <!-- KeyRegion -->
+</section> 
 <div class="WideKeyRegion"></div>
 
 <div class="OldSlider"></div>
@@ -2128,8 +2124,8 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
 <footer>
 	<dl>
   <dt>View</dt>
-  <dd><input type="checkbox" id="WideFooter" name="Wide" class="Button"><label for="WideFooter">广大</label>
-  </dd><dd><input type="checkbox" id="DarkButtonFooter" name="Dark" class="Button"><label for="DarkButtonFooter">Dark</label>
+  <dd><input type="checkbox" id="WideFooter" name="Wide" class="Button"><label for="WideFooter">宽视图</label>
+  </dd><dd><input type="checkbox" id="DarkButtonFooter" name="Dark" class="Button"><label for="DarkButtonFooter">深色模式</label>
  </dd></dl>
  <dl>
   <dt>网站信息</dt>
@@ -2139,60 +2135,16 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
  </dl>
  <dl style="text-align: right;">
   <dt>相关信息</dt>
-  <dd><a href="./print/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <dd><a href="./print/"><svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 512 512">
 	<path fill="currentColor" d="M416.155 164.483H95.845c-38.895 0-68.638 29.743-68.638 68.638v137.275h91.517v91.518h274.552v-91.518h91.517V233.121c0-38.895-29.743-68.638-68.638-68.638zm-68.638 251.672H164.483V301.759h183.034v114.396zM416.155 256c-13.728 0-22.879-9.152-22.879-22.879 0-13.728 9.151-22.88 22.879-22.88 13.728 0 22.879 9.152 22.879 22.88 0 13.727-9.151 22.879-22.879 22.879zM393.276 50.086H118.724v91.518h274.552V50.086z"/>
 </svg>
  打印 PDF</a></dd>
   <dd><a href="./image/元素周期表.html" title="元素周期表(SVG图片)">元素周期表</a></dd>
   <dd><a href="https://www.bilibili.com/video/BV1dU4y1a7LD/" title="元素周期表（转自YouTube，手动翻译字幕）">演示视频</a></dd>
-  <!-- <dd><form name="language" method="get" action="."><select name="lang" id="Lang"><option value="af">Afrikaans</option><option value="ar">العربية</option><option value="bg">Български</option><option value="bn">বাংলা</option><option value="ca">Català</option><option value="cs">Čeština</option><option value="cy">Cymraeg</option><option value="da">Dansk</option><option value="de">Deutsch</option><option value="el">Ελληνικά</option><option value="en">English</option><option value="eo">Esperanto</option><option value="es">Español</option><option value="et">Eesti</option><option value="fa">فارسی</option><option value="fi">Suomi</option><option value="fr">Français</option><option value="he">עברית</option><option value="hi">हिन्दी</option><option value="hr">Hrvatski</option><option value="hu">Magyar</option><option value="id">Bahasa</option><option value="is">Íslenska</option><option value="it">Italiano</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="la">Latina</option><option value="lt">Lietuvių</option><option value="lv">Latviešu</option><option value="nl">Nederlands</option><option value="no">Norsk</option><option value="pl">Polski</option><option value="pt">Português</option><option value="ro">Română</option><option value="ru">Русский</option><option value="sk">Slovenčina</option><option value="sl">Slovenščina</option><option value="sr">Српски</option><option value="sv">Svenska</option><option value="sw">Kiswahili</option><option value="th">ไทย</option><option value="tr">Türkçe</option><option value="uk">Українська</option><option value="vi">Tiếng Việt</option><option value="zh" selected="selected">中文 (简)</option><option value="zh-tw">中文 (繁)</option></select> -->
-  <!-- <noscript><input type="submit" value="▶"></noscript></form ></dd>-->
+  
+  
  </dl>
- <!-- <dl>
-  <dt>Engage</dt>
-  <dd>
-   <a href="https://chem.chat/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#7289da">
-	<rect width="512" height="512" rx="15%"/>
-	<path d="m346 392-21-25c41-11 57-39 57-39-52 49-194 51-249 0 0 0 14 26 56 39l-23 25c-70-1-97-48-97-48 0-104 46-187 46-187 47-33 90-33 90-33l3 4c-58 16-83 42-83 42 68-46 208-42 263 0 1-1-33-28-86-42l5-4s43 0 90 33c0 0 46 83 46 187 0 0-27 47-97 48z" fill="#fff"/>
-	<ellipse cx="196" cy="279" rx="33" ry="35"/>
-	<ellipse cx="312" cy="279" rx="33" ry="35"/>
-</svg>
-</a>
-   <a href="https://twitter.com/ptable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-	<rect width="512" height="512" rx="15%" fill="#1da1f2"/>
-	<path fill="#fff" d="M437 152a72 72 0 0 1-40 12 72 72 0 0 0 32-40 72 72 0 0 1-45 17 72 72 0 0 0-122 65 200 200 0 0 1-145-74 72 72 0 0 0 22 94 72 72 0 0 1-32-7 72 72 0 0 0 56 69 72 72 0 0 1-32 1 72 72 0 0 0 67 50 200 200 0 0 1-105 29 200 200 0 0 0 309-179 200 200 0 0 0 35-37"/>
-</svg>
-
-</a>
-   <a href="https://instagram.com/ptable"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
-	<rect width="512" height="512" rx="15%" id="b"/>
-	<use fill="url(#a)" xlink:href="#b"/>
-	<use fill="url(#c)" xlink:href="#b"/>
-	<radialGradient id="a" cx=".4" cy="1" r="1">
-		<stop offset=".1" stop-color="#fd5"/>
-		<stop offset=".5" stop-color="#ff543e"/>
-		<stop offset="1" stop-color="#c837ab"/>
-	</radialGradient>
-	<linearGradient id="c" x2=".2" y2="1">
-		<stop offset=".1" stop-color="#3771c8"/>
-		<stop offset=".5" stop-color="#60f" stop-opacity="0"/>
-	</linearGradient>
-	<g fill="none" stroke="#fff" stroke-width="30">
-		<rect width="308" height="308" x="102" y="102" rx="81"/>
-		<circle cx="256" cy="256" r="72"/>
-		<circle cx="347" cy="165" r="6"/>
-	</g>
-</svg>
-
-</a>
-  </dd>
-  <dd><a id="Share" href="/">Share</a></dd>
-  <dd><a href="/contact/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-	<rect width="512" height="512" rx="15%" fill="teal"/>
-	<rect width="356" height="256" x="78" y="128" fill="#fff" rx="8%"/><path fill="none" stroke="teal" stroke-width="20" d="M434 128L269 292c-7 8-19 8-26 0L78 128m0 256l129-128m227 128L305 256"/>
-</svg>
-Contact</a></dd>
- </dl> -->
+ 
  <addr>Ptable® <span>是</span> <a href="https://dayah.com/" target="_blank" rel="noopener">Michael Dayah</a>注册的商标. <span>于 2020年11月20日 更新。<br>（本页面由涛之雨于 2021年4月1日 添加部分汉化、添加部分字体、离线、修改等）</span></addr>
 </footer>
 
@@ -2201,12 +2153,32 @@ Contact</a></dd>
 </template>
 
 <template id="CompoundArrows"><div>
- <button class="Up"></button> <!-- no indent to avoid creating whitespace nodes -->
+ <button class="Up"></button> 
  <button class="Down"></button>
 </div></template>
 <script type="text/javascript">
+	document.querySelector("#Menu").onclick = a => {
+    const x = document.querySelector("footer");
+    a=a.target;
+    document.body.style.overflowY = (a.checked ? "hidden" : "");
+    a.checked ? (
+        x.ontouchstart = x.onmousedown = e => {
+            e = e || window.event;
+            e.preventDefault();
+            let sX1=(e.type==='touchstart'?e.changedTouches[0].clientX:e.clientX),sX2=0,
+            sY1=(e.type==='touchstart'?e.changedTouches[0].clientY:e.clientY),sY2=0;
+            x.ontouchmove = x.onmousemove = e=> {
+                sX2=(e.type==='touchstart'?e.changedTouches[0].clientX:e.clientX);
+                sY2=(e.type==='touchstart'?e.changedTouches[0].clientY:e.clientY);
+            }
+            x.ontouchend = document.onmouseup = e=> {
+                (Math.abs(sY1-sY2)<=30&&sX1-sX2>50)&&(x.ontouchend = document.onmouseup =x.ontouchstart = x.onmousedown =x.ontouchmove = x.onmousemove =undefined,document.querySelector("#Menu").click())
+            }
+        }
+) : ""
+}
 	if(window.location.protocol ==='file:'){
-  		document.body.innerHTML='<h1 style="color:RGB(var(--text));display:block;">请打开服务器，通过<a href="http://localhost/Ptable">loalhost/ptable</a>访问！<BR> 如果不会操作，请访问<a href="https://ptable.com/?lang=zh">https://ptable.com/?lang=zh</a>原网站</h1>'
+  		document.body.innerHTML='<h1 style="color:RGB(var(--text));display:block;">请打开服务器，通过<a href="https://localhost">本地服务器</a>访问！<BR> 如果不会操作，请查看教程或直接访问<a href="https://taozhiyu.github.io">github Page（不推荐）</a>、<a href="https://taozhiyu.vercel.app">vercel加速镜像（推荐）</a>或<a href="https://ptable.com/?lang=zh">原网站（不推荐）</a></h1>'
   	}</script>
 
 
