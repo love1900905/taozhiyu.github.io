@@ -2156,26 +2156,39 @@ ol							{ font-size: calc(var(--base-vw) * var(--aspect-ratio) * var(--sidebar-
  <button class="Up"></button> 
  <button class="Down"></button>
 </div></template>
-<script type="text/javascript">
+<script type="text/javascript">// var passiveEvent = false;
+// try {
+//     var opts = Object.defineProperty({}, 'passive', {
+//         get: function () {
+//             passiveEvent = true;
+//         }
+//     });
+//     window.addEventListener("test", null, opts);
+// } catch (e) { }
+
+// // in my case I need both passive and capture set to true, change as you need it.
+//     passiveEvent = passiveEvent ? { capture: true, passive: true } : true;
 	document.querySelector("#Menu").onclick = a => {
     const x = document.querySelector("footer");
     a=a.target;
     document.body.style.overflowY = (a.checked ? "hidden" : "");
     a.checked ? (
-        x.ontouchstart = x.onmousedown = e => {
+        x.onpointerdown = e => {
             e = e || window.event;
+			if(["touch","mouse"].indexOf(e.pointerType)<0)return
             e.preventDefault();
-            let sX1=(e.type==='touchstart'?e.changedTouches[0].clientX:e.clientX),sX2=0,
-            sY1=(e.type==='touchstart'?e.changedTouches[0].clientY:e.clientY),sY2=0;
-            x.ontouchmove = x.onmousemove = e=> {
-                sX2=(e.type==='touchstart'?e.changedTouches[0].clientX:e.clientX);
-                sY2=(e.type==='touchstart'?e.changedTouches[0].clientY:e.clientY);
+			sX1=e.clientX,sX2=0,
+            sY1=e.clientY,sY2=0;
+            x.onpointermove = e=> {
+            	e = e || window.event;
+                sX2=e.clientX,sY2=e.clientY;
             }
-            x.ontouchend = document.onmouseup = e=> {
-                (Math.abs(sY1-sY2)<=30&&sX1-sX2>50)&&(x.ontouchend = document.onmouseup =x.ontouchstart = x.onmousedown =x.ontouchmove = x.onmousemove =undefined,document.querySelector("#Menu").click())
+            document.onmouseup =x.ontouchend = e=> {
+            	e = e || window.event;
+                (Math.abs(sY1-sY2)<=Math.floor(e.screenY/50)&&sX1-sX2>Math.floor(e.screenX/30))&&(document.querySelector("#Menu").click())
             }
         }
-) : ""
+) : (x.onpointerdown=x.onpointermove = document.onmouseup =x.ontouchend =undefined)
 }
 	if(window.location.protocol ==='file:'){
   		document.body.innerHTML='<h1 style="color:RGB(var(--text));display:block;">请打开服务器，通过<a href="https://localhost">本地服务器</a>访问！<BR> 如果不会操作，请查看教程或直接访问<a href="https://taozhiyu.github.io">github Page（不推荐）</a>、<a href="https://taozhiyu.vercel.app">vercel加速镜像（推荐）</a>或<a href="https://ptable.com/?lang=zh">原网站（不推荐）</a></h1>'

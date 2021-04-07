@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>重新加载。。</title>
+</head>
+
+<body>
+    <h1 id="info">正在清理数据、缓存等，清理结束会更新页面内容。</h1>
+    <script type="text/javascript">
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for (let registration of registrations) {
+                registration.unregister()
+            }
+            document.getElementById("info").innerHTML="清理结束！重启浏览器以完整卸载"
+        }).catch(function(err) {
+            console.log('Service Worker registration failed: ', err)
+        })
+    }
+    </script>
+</body>
+
+</html>
