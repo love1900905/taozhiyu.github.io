@@ -26,7 +26,7 @@
   <meta property="og:title" content="元素周期表 - Ptable">
   <meta property="og:description" content="交互式的周期表在动态的布局里展现名字,电子,曲线,轨道,同位素,搜索.全面的描述.">
   <meta property="og:image" content="./icon/pt-square-192.png">
-
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0276FD">
   <meta name="format-detection" content="telephone=no">
@@ -1487,7 +1487,7 @@ sY2=(e.clientY?e:e.changedTouches[0]).clientY;//console.log(sX2,sY2);
 ) : (x.ontouchstart = x.onmousedown =x.ontouchmove = x.onmousemove = document.onmouseup =x.ontouchend =undefined)
 }
 	if(window.location.protocol ==='file:'){
-  		document.body.innerHTML='<h1 style="color:RGB(var(--text));display:block;">请打开服务器，通过<a href="https://localhost">本地服务器</a>访问！<BR> 如果不会操作，请查看教程或直接访问<a href="https://taozhiyu.github.io">github Page（不推荐）</a>、<a href="https://taozhiyu.vercel.app">vercel加速镜像（推荐）</a>或<a href="https://ptable.com/?lang=zh">原网站（不推荐）</a></h1>'
+  		document.body.innerHTML='<h1 style="color:RGB(var(--text));display:block;">请打开服务器，通过<a href="https://localhost">本地服务器</a>访问！<BR> 如果不会操作，请查看教程或直接访问<br><a href="https://taozhiyu.github.io">github Page（不推荐）</a><br><a href="https://taozhiyu.vercel.app">vercel加速镜像（推荐）</a><br>或是<a href="https://ptable.com/?lang=zh">原网站（不推荐）</a></h1>'
   	}</script>
 
 
