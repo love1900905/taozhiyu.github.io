@@ -1470,7 +1470,7 @@
     a.checked ? (
         x.ontouchstart = x.onmousedown = e => {
             e = e || window.event;
-            e.preventDefault();
+            if(e.target===document.querySelector("footer"))e.preventDefault();
 			sX1=(e.clientX?e:e.changedTouches[0]).clientX,sX2=0,
             sY1=(e.clientY?e:e.changedTouches[0]).clientY,sY2=0;
             x.ontouchmove = x.onmousemove = e=> {
