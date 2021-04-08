@@ -14,10 +14,26 @@
             for (let registration of registrations) {
                 registration.unregister()
             }
-            document.getElementById("info").innerHTML="清理结束！重启浏览器以完整卸载"
+            document.getElementById("info").innerHTML = "清理结束！重启浏览器以完整卸载"
         }).catch(function(err) {
             console.log('Service Worker registration failed: ', err)
         })
+        // navigator.serviceWorker.getRegistrations().then(
+        //     function(registrations) {
+        //         for (let registration of registrations) {
+        //             registration.unregister().then(
+        //                 function() {
+        //                     return self.clients.matchAll();
+        //                 }
+        //             ).then(function(clients) {
+        //                 clients.forEach(client => {
+        //                     if (client.url && "navigate" in client) {
+        //                         client.navigate(client.url)
+        //                     }
+        //                 });
+        //             });
+        //         }
+        //     });
     }
     </script>
 </body>
